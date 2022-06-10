@@ -1,11 +1,51 @@
-const express = require("express");
-const app = express();
-const port = 3000;
+import { get } from "./config/env.js";
+import express from "express";
+import helmet from "helmet";
+import compression from "compression";
+import mongoose from "mongoose";
+import { mongodb } from "./config/database.js";
+import cors from "cors";
+import json from "body-parser";
+import routes from "./routes/routes.js";
+const { connect, connection } = mongoose;
+// .env file configuration
+get();
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
+// Express initialization
+const app = express();
+
+// CORS initialization
+app.use(cors());
+
+// Helmet initialization
+app.use(helmet());
+
+// compress all responses
+app.use(compression());
+
+// MongoDB connection
+connect(mongodb.uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+// On connection error
+connection.on("error", (error) => {
+  console.error("Database error: " + mongodb.uri);
+});
+
+// On successful connection
+connection.on("connected", () => {
+  console.log("Connected to database");
+});
+
+// Body parser middleware
+app.use(json());
+
+// Routes
+app.use("/", routes);
+
+const server = app.listen(process.env.PORT || 8080, () => {
+  const port = server.address().port;
+  console.log("app running on port", port);
 });
