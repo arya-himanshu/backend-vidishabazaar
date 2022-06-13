@@ -40,7 +40,10 @@ connection.on("connected", () => {
 });
 
 // Body parser middleware
-app.use(json());
+app.use(express.json());
+
+app.use(express.urlencoded({extended:false}));
+
 
 // Routes
 app.use("/", routes);

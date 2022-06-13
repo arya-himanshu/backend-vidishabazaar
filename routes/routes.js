@@ -1,15 +1,15 @@
 import express from "express";
-import { shopRegistration } from "../controllers/shop-registration-controller.js";
-import { userRegistration } from "../controllers/user-registration-controller.js";
-
+import { shopRoutes } from "./shopRoutes.js";
+import {logInSignUpRoute} from './userLogInSignUpRoutes.js'
 const router = express.Router();
 
 router.get("/", (request, response) => {
   response.send("Hello");
 });
 
-router.get("/shop_registration", shopRegistration);
+router.use("/shop", shopRoutes);
 
-router.get("/user_registration", userRegistration);
+router.use("/user-auth", logInSignUpRoute);
+
 
 export default router;
