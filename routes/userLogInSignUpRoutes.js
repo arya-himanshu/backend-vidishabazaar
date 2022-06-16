@@ -3,7 +3,7 @@ import * as userAuth from "../controllers/userAuthenticationController.js";
 
 const logInSignUpRoute = express.Router();
 
-logInSignUpRoute.route("/user-login").get(userAuth.userLogIn);
+logInSignUpRoute.route("/user-login").post(userAuth.userLogIn);
 
 logInSignUpRoute.route("/user-signup").post(userAuth.userSignUp);
 

@@ -7,7 +7,9 @@ import { mongodb } from "./config/database.js";
 import cors from "cors";
 import json from "body-parser";
 import routes from "./routes/routes.js";
+import  apiErrorHandler from "./error/apiErrorHandler.js";
 const { connect, connection } = mongoose;
+
 // .env file configuration
 get();
 
@@ -42,11 +44,13 @@ connection.on("connected", () => {
 // Body parser middleware
 app.use(express.json());
 
-app.use(express.urlencoded({extended:false}));
+app.use(express.urlencoded({ extended: false }));
 
 
 // Routes
 app.use("/", routes);
+
+app.use(apiErrorHandler);
 
 const server = app.listen(process.env.PORT || 8080, () => {
   const port = server.address().port;
