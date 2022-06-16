@@ -72,6 +72,6 @@ userSchema.pre("save", async function (next) {
   }
 });
 
-const RegisterUser = new mongoose.model("User", userSchema);
+const VidishaBazaarUser = new mongoose.model("User", userSchema);
 
-export { RegisterUser };
+export { VidishaBazaarUser };
