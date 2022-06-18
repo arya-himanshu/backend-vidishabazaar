@@ -1,6 +1,7 @@
 import { VidishaBazaarUser } from "../models/userModel.js";
 import ApiError from "../error/ApiError.js";
 import { getUserByMobileNumber, getUserById } from "../services/userService.js";
+
 const userSignUp = async (request, response, next) => {
   const { name, dob, mobile, email, password, confirm_password, role_id } = request.body;
 
@@ -49,6 +50,9 @@ const userSignUp = async (request, response, next) => {
           created_at: new Date(),
           is_user_active: true,
         });
+
+        const token = await user.generateAuthToken();
+
         user
           .save()
           .then((data) => {
@@ -66,7 +70,7 @@ const userSignUp = async (request, response, next) => {
     });
 };
 
-const mobileOptValidation = async (req, res, next) => {
+const mobileOptValidation = (req, res, next) => {
   if (req.body.otp) {
     getUserById(req.body.id)
       .then(async (data) => {

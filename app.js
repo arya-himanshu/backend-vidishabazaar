@@ -5,7 +5,6 @@ import compression from "compression";
 import mongoose from "mongoose";
 import { mongodb } from "./config/database.js";
 import cors from "cors";
-import json from "body-parser";
 import routes from "./routes/routes.js";
 import  apiErrorHandler from "./error/apiErrorHandler.js";
 const { connect, connection } = mongoose;

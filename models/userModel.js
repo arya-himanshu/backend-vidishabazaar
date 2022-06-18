@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
 const userSchema = new mongoose.Schema({
   id: {
     type: Number,
@@ -43,6 +45,14 @@ const userSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  tokens: [
+    {
+      token: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
   last_updated: {
     type: Date,
     required: true,
@@ -63,11 +73,21 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-var counter = mongoose.model('users', userSchema);
+userSchema.methods.generateAuthToken = async function () {
+  try {
+      const token = jwt.sign({ _id: this.id }, process.env.SECRET_KEY);
+      this.tokens = this.tokens.concat({ token });
+      await this.save();
+      return token;
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 userSchema.pre("save", async function (next) {
-  if (this.isModified) {
+  if (this.isModified("password")) {
     this.password = await bcrypt.hash(this.password, 10);
+    console.log("user+model", this.password);
     next();
   }
 });
