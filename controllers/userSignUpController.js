@@ -1,5 +1,5 @@
 import { VidishaBazaarUser } from "../models/userModel.js";
-import ApiError from "../error/ApiError.js";
+import ApiError from "../middleware/ApiError.js";
 import { getUserByMobileNumber, getUserById } from "../services/userService.js";
 
 const userSignUp = async (request, response, next) => {
@@ -50,41 +50,37 @@ const userSignUp = async (request, response, next) => {
           created_at: new Date(),
           is_user_active: true,
         });
-
         const token = await user.generateAuthToken();
-
-        user
-          .save()
-          .then((data) => {
-            return next(ApiError.successServerCode({ errorMsg: null, data: data }));
-          })
-          .catch((error) => {
-            console.error(error);
-            return next(ApiError.internalServerError({ errorMsg: "something went wrong", error: error.errors.mobile.message }));
-          });
+        if (!token) {
+          console.error("Token is not inserted into the database");
+        }
+        const registeredUser = await user.save();
+        if (registeredUser) {
+          return next(ApiError.successServerCode({ errorMsg: null, data: registeredUser }));
+        } else {
+          return next(ApiError.internalServerError({ errorMsg: "something went wrong", error: error.errors.mobile.message }));
+        }
       }
     })
     .catch((error) => {
-      console.error(error);
       return next(ApiError.internalServerError({ errorMsg: "internal server error", error: error.errors.mobile }));
     });
 };
 
 const mobileOptValidation = (req, res, next) => {
-  if (req.body.otp) {
+  if (req.body.otp && req.body.id) {
     getUserById(req.body.id)
       .then(async (data) => {
         if (data && data.data && data.data.otp) {
           const dbOtp = data.data.otp;
           if (dbOtp === req.body.otp) {
-            await VidishaBazaarUser.update({ _id: req.body.id }, { $set: { is_user_verified: true } })
-              .then((data) => {
-                return next(ApiError.successServerCode({ errorMsg: null, successMsg: "User is verified now", data }));
-              })
-              .catch((error) => {
-                console.log(error);
-                return next(ApiError.internalServerError({ errorMsg: "internal server error" }));
-              });
+            const updatedUser = await VidishaBazaarUser.update({ _id: req.body.id }, { $set: { is_user_verified: true } });
+            if (updatedUser) {
+              return next(ApiError.successServerCode({ errorMsg: null, successMsg: "User is verified now", data }));
+            } else {
+              console.log(error);
+              return next(ApiError.internalServerError({ errorMsg: "internal server error" }));
+            }
           } else {
             return next(ApiError.unauthorizedServerError({ errorMsg: "Otp is not matching" }));
           }
@@ -93,7 +89,8 @@ const mobileOptValidation = (req, res, next) => {
         }
       })
       .catch((error) => {
-        console.error(error);
+        console.log(error);
+        return next(ApiError.internalServerError({ errorMsg: "Internal server error" }));
       });
   } else {
     return next(ApiError.badRequest({ errorMsg: "Otp is required" }));

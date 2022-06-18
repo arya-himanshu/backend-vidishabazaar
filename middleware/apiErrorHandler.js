@@ -4,7 +4,6 @@ const apiErrorHandler = (err, req, res, next) => {
     res.status(err.code).send(err.errorObj);
     return;
   }
-
   res.status(500).json("Something went wrong");
 };
 

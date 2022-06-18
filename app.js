@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 import { mongodb } from "./config/database.js";
 import cors from "cors";
 import routes from "./routes/routes.js";
-import  apiErrorHandler from "./error/apiErrorHandler.js";
+import  apiErrorHandler from "./middleware/apiErrorHandler.js";
 const { connect, connection } = mongoose;
 
 // .env file configuration

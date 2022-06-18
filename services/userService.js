@@ -1,8 +1,13 @@
 import { VidishaBazaarUser } from "../models/userModel.js";
 
 const getUserByMobileNumber = async (mobile) => {
-  const user = await VidishaBazaarUser.findOne({ mobile });
-  return { data: user };
+  try {
+    const user = await VidishaBazaarUser.findOne({ mobile });
+    return { data: user };
+  } catch (error) {
+    console.error("error",error);
+    return { data: null };
+  }
 };
 
 const getUserById = async (userId, callback) => {
