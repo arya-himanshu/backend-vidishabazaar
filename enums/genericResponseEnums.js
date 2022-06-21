@@ -18,6 +18,15 @@ const GENERIC_RESPONSE_MESSAGES = {
   OTP_USER_NOT_FOUND: "Otp or User is not found our database please try again later",
   OTP_REQUIRED: "Otp is required",
   USER_VERIFIED: "User is verified now",
+  CATEGORY_NAME_REQUIRED: "Category name is required",
+  LANGUAGE_REQUIRED: "Language name is required",
+  ENGLISH_LANGUAGE_REQUIRED: "English language is required, because it is default language",
+  CATEGORY_CREATED: "Category was successfully created.",
+  CATEGORY_CREATION_FAILED: "Failed to create shop category",
+  CATEGORY_ALREADY_CREATED: "Category name ${category_name} is already created",
+  CATEGORY_Id_REQUIRED: "Category ID is required",
+  CATEGORY_NOT_FOUND: "Category not found",
+  CATEGORY_UPDATED: "Category Update successfully",
 };
 
 export default GENERIC_RESPONSE_MESSAGES;
