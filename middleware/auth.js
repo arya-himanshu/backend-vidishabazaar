@@ -4,7 +4,7 @@ import { getUserByMobileNumber } from "../services/userService.js";
 
 const auth = async (req, res, next) => {
   try {
-    const { mobile, token } = req.body;
+    const { mobile, token } = req.headers;
     if (mobile && token) {
       const user = await getUserByMobileNumber(mobile);
       if (user && user.data.mobile === mobile && user.data.tokens.length) {

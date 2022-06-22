@@ -27,6 +27,17 @@ const GENERIC_RESPONSE_MESSAGES = {
   CATEGORY_Id_REQUIRED: "Category ID is required",
   CATEGORY_NOT_FOUND: "Category not found",
   CATEGORY_UPDATED: "Category Update successfully",
+  CATEGORY_DELETED: "Category deleted successfully",
+
+
+  SHOP_NAME_REQUIRED: "Shop name is required",
+  SHOP_OWNER_ID_REQUIRED:"Shop owner ID is required",
+  SHOP_CATEGORY_ID_REQUIRED:"Shop category ID is required",
+  SHOP_ADDRESS_REQUIRED:"Shop address is required",
+  SHOP_MOBILE_REQUIRED:"Shop mobile number is required",
+  SHOP_NOT_FOUND:"Shops not found, please try again later",
+
+
 };
 
 export default GENERIC_RESPONSE_MESSAGES;

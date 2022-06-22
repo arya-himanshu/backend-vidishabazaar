@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 import { mongodb } from "./config/database.js";
 import cors from "cors";
 import routes from "./routes/routes.js";
-import  apiErrorHandler from "./middleware/apiErrorHandler.js";
+import apiErrorHandler from "./middleware/apiErrorHandler.js";
 const { connect, connection } = mongoose;
 
 // .env file configuration
@@ -45,11 +45,14 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: false }));
 
-
 // Routes
 app.use("/", routes);
 
 app.use(apiErrorHandler);
+
+app.get("*", function (req, res) {
+  res.send('<h1 style="color:red;text-align:center">Dost kahi bhatak gaye ho app.</h1>', 404);
+});
 
 const server = app.listen(process.env.PORT || 8080, () => {
   const port = server.address().port;

@@ -1,14 +1,15 @@
 import express from "express";
 import * as shopCategory from "../controllers/shopCategoryController.js";
+import * as shopRegistration from "../controllers/shopCRUDController.js";
 import { auth } from "../middleware/auth.js";
 const shopRoutes = express.Router();
 
-shopRoutes.route("/").get(auth, (req, res) => {
-  res.send('<h1 style="text-align:center;color:red;">A shop is loading.</h1>');
-});
-shopRoutes.route("/shop-category").post(shopCategory.shopCategory);
-shopRoutes.route("/shop-category").get(shopCategory.getAllShopCategory);
-shopRoutes.route("/shop-category/:id").get(shopCategory.getCategoryById);
-shopRoutes.route("/update-shop-category/:id").put(shopCategory.updateCategorybyId);
+shopRoutes.route("/shop-category").post(auth, shopCategory.shopCategory);
+shopRoutes.route("/shop-categories").get(auth, shopCategory.getAllShopCategory);
+shopRoutes.route("/shop-category/:id").get(auth, shopCategory.getCategoryById);
+shopRoutes.route("/update-shop-category/:id").put(auth, shopCategory.updateCategorybyId);
+shopRoutes.route("/delete-shop-category/:id").delete(auth, shopCategory.deleteCategoryById);
+shopRoutes.route("/shop-registration").post(auth, shopRegistration.creatingShop);
+shopRoutes.route("/shops").get(shopRegistration.getAllShops);
 
 export { shopRoutes };

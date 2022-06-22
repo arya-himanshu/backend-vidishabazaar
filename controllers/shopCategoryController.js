@@ -16,7 +16,6 @@ const shopCategory = (req, res, next) => {
 
   try {
     isCategoryAlresdyCreated(category_name, async (error, response) => {
-      console.log(error);
       if (error) {
         return next(ApiError.badRequest(response.message.replace("${category_name}", language.english)));
       } else {
@@ -77,7 +76,6 @@ const isCategoryAlresdyCreated = async (category_name, callback) => {
 
 const updateCategorybyId = async (req, res, next) => {
   const { _id, category_name, language } = req.body;
-  console.log(_id);
   if (!_id) {
     return next(ApiError.badRequest(GENERIC_RESPONSE_MESSAGES.CATEGORY_Id_REQUIRED));
   }
@@ -94,4 +92,18 @@ const updateCategorybyId = async (req, res, next) => {
   }
 };
 
-export { shopCategory, getAllShopCategory, getCategoryById, updateCategorybyId };
+const deleteCategoryById = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const deletedCategory = await ShopCategory.deleteOne({ id });
+    if (!deletedCategory) {
+      return next(ApiError.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR));
+    } else {
+      return next(ApiError.successServerCode(GENERIC_RESPONSE_MESSAGES.CATEGORY_DELETED));
+    }
+  } catch (er) {
+    return next(ApiError.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR));
+  }
+};
+
+export { shopCategory, getAllShopCategory, getCategoryById, updateCategorybyId, deleteCategoryById };
