@@ -2,9 +2,10 @@ import { VidishaBazaarUser } from "../models/userModel.js";
 import ApiError from "../middleware/ApiError.js";
 import { getUserByMobileNumber, getUserById } from "../services/userService.js";
 import GENERIC_RESPONSE_MESSAGES from "../enums/genericResponseEnums.js";
+import UserModel from "../services/UserModel.js";
 
 const userSignUp = async (request, response, next) => {
-  const { name, dob, mobile, email, password, confirm_password, role_id } = request.body;
+  const { name, dob, mobile, email, password, confirm_password } = request.body;
 
   if (!name) {
     return next(ApiError.badRequest({ errorMsg: GENERIC_RESPONSE_MESSAGES.FIRST_NAME_REQUIRED }));
@@ -28,15 +29,11 @@ const userSignUp = async (request, response, next) => {
     return next(ApiError.badRequest({ errorMsg: GENERIC_RESPONSE_MESSAGES.CONFIRM_PASS_IS_REQUIRED }));
   }
 
-  if (!role_id) {
-    return next(ApiError.badRequest({ errorMsg: GENERIC_RESPONSE_MESSAGES.ROLE_IS_REQUIRED }));
-  }
-
   // Checking if user exist or not
   getUserByMobileNumber(mobile)
     .then(async (data) => {
       if (data && data.data) {
-        return next(ApiError.conflictServerError({ errorMsg: `${GENERIC_RESPONSE_MESSAGES.USER_ALREDY_EXIST}  ${mobile} number` }));
+        return next(ApiError.conflictServerError({ errorMsg: `${GENERIC_RESPONSE_MESSAGES.USER_ALREDY_EXIST} ${mobile} number` }));
       } else {
         const user = await new VidishaBazaarUser({
           name,
@@ -45,7 +42,6 @@ const userSignUp = async (request, response, next) => {
           email,
           password,
           confirm_password,
-          role_id,
           otp: Math.floor(100000 + Math.random() * 900000),
           last_updated: new Date(),
           created_at: new Date(),
@@ -57,14 +53,20 @@ const userSignUp = async (request, response, next) => {
         }
         const registeredUser = await user.save();
         if (registeredUser) {
-          return next(ApiError.successServerCode({ errorMsg: null, data: registeredUser }));
+          return next(ApiError.successServerCode({ successMsg: "User created successfully", data: new UserModel(registeredUser), isSuccess: true }));
         } else {
           return next(ApiError.internalServerError({ errorMsg: GENERIC_RESPONSE_MESSAGES.SOMETHING_WENT_WRONG, error: "error.errors.mobile.message" }));
         }
       }
     })
     .catch((error) => {
-      return next(ApiError.internalServerError({ errorMsg: GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, error: error.errors.mobile }));
+      if (error && error.errors && error.errors.mobile) {
+        console.log(error);
+        return next(ApiError.internalServerError({ errorMsg: error.errors.mobile.message, error: error }));
+      } else {
+        console.log(error);
+        return next(ApiError.internalServerError({ errorMsg: GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, error: error }));
+      }
     });
 };
 

@@ -41,10 +41,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: 8987,
   },
-  role_id: {
-    type: Number,
-    required: true,
-  },
   tokens: [
     {
       token: {
