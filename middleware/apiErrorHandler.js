@@ -1,7 +1,7 @@
-import ApiError from "./ApiError.js";
+import ApiGenericResponse from "./ApiGenericResponse.js";
 const apiErrorHandler = (err, req, res, next) => {
-  if (err instanceof ApiError) {
-    res.status(err.code).send(err.errorObj);
+  if (err instanceof ApiGenericResponse) {
+    res.status(err.code).send(err);
     return;
   }
   res.status(500).json("Something went wrong");

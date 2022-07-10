@@ -1,39 +1,40 @@
 import { VidishaBazaarUser } from "../models/userModel.js";
-import ApiError from "../middleware/ApiError.js";
+import ApiGenericResponse from "../middleware/ApiGenericResponse.js";
 import { getUserByMobileNumber, getUserById } from "../services/userService.js";
 import GENERIC_RESPONSE_MESSAGES from "../enums/genericResponseEnums.js";
 import UserModel from "../services/UserModel.js";
+import GenericServerResPonseForAll from "../services/GenericServerResPonseForAll.js";
 
 const userSignUp = async (request, response, next) => {
   const { name, dob, mobile, email, password, confirm_password } = request.body;
 
   if (!name) {
-    return next(ApiError.badRequest({ errorMsg: GENERIC_RESPONSE_MESSAGES.FIRST_NAME_REQUIRED }));
+    return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.FIRST_NAME_REQUIRED, undefined, false));
   }
 
   if (!dob) {
-    return next(ApiError.badRequest({ errorMsg: GENERIC_RESPONSE_MESSAGES.DOB }));
+    return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.DOB, undefined, false));
   }
 
   if (!mobile) {
-    return next(ApiError.badRequest({ errorMsg: GENERIC_RESPONSE_MESSAGES.MOBILE_IS_REQUIRED }));
+    return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.MOBILE_IS_REQUIRED, undefined, false));
   } else if (mobile && mobile.length != 10) {
-    return next(ApiError.badRequest({ errorMsg: GENERIC_RESPONSE_MESSAGES.MOBILE_IN_10_DIGIT }));
+    return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.MOBILE_IN_10_DIGIT), undefined, false);
   }
 
   if (password && confirm_password && password !== confirm_password) {
-    return next(ApiError.unauthorizedServerError({ errorMsg: GENERIC_RESPONSE_MESSAGES.PASS_CONFIRMPASS_NOT_MATCHING }));
+    return next(ApiGenericResponse.unauthorizedServerError(GENERIC_RESPONSE_MESSAGES.PASS_CONFIRMPASS_NOT_MATCHING, undefined, false));
   } else if (!password) {
-    return next(ApiError.badRequest({ errorMsg: GENERIC_RESPONSE_MESSAGES.PASSWORD_IS_REQUIRED }));
+    return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.PASSWORD_IS_REQUIRED, undefined, false));
   } else if (!confirm_password) {
-    return next(ApiError.badRequest({ errorMsg: GENERIC_RESPONSE_MESSAGES.CONFIRM_PASS_IS_REQUIRED }));
+    return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.CONFIRM_PASS_IS_REQUIRED, undefined, false));
   }
 
   // Checking if user exist or not
   getUserByMobileNumber(mobile)
     .then(async (data) => {
-      if (data && data.data) {
-        return next(ApiError.conflictServerError({ errorMsg: `${GENERIC_RESPONSE_MESSAGES.USER_ALREDY_EXIST} ${mobile} number` }));
+      if (data) {
+        return next(ApiGenericResponse.conflictServerError(`${GENERIC_RESPONSE_MESSAGES.USER_ALREDY_EXIST} ${mobile} number`, undefined, false));
       } else {
         const user = await new VidishaBazaarUser({
           name,
@@ -52,20 +53,20 @@ const userSignUp = async (request, response, next) => {
           console.error(GENERIC_RESPONSE_MESSAGES.TOKEN_NOT_INSERTED);
         }
         const registeredUser = await user.save();
-        if (registeredUser) {
-          return next(ApiError.successServerCode({ successMsg: "User created successfully", data: new UserModel(registeredUser), isSuccess: true }));
+         if (registeredUser) {
+          const userData = new UserModel(registeredUser);
+          return next(ApiGenericResponse.successServerCode("User created successfully", userData, true));
         } else {
-          return next(ApiError.internalServerError({ errorMsg: GENERIC_RESPONSE_MESSAGES.SOMETHING_WENT_WRONG, error: "error.errors.mobile.message" }));
+          return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.SOMETHING_WENT_WRONG, undefined, false));
         }
       }
     })
     .catch((error) => {
       if (error && error.errors && error.errors.mobile) {
-        console.log(error);
-        return next(ApiError.internalServerError({ errorMsg: error.errors.mobile.message, error: error }));
+        return next(ApiGenericResponse.internalServerError(error.errors.mobile.message, undefined, false));
       } else {
         console.log(error);
-        return next(ApiError.internalServerError({ errorMsg: GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, error: error }));
+        return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
       }
     });
 };
@@ -74,29 +75,30 @@ const mobileOptValidation = (req, res, next) => {
   if (req.body.otp && req.body.id) {
     getUserById(req.body.id)
       .then(async (data) => {
-        if (data && data.data && data.data.otp) {
-          const dbOtp = data.data.otp;
+        if (data && data.otp) {
+          const dbOtp = data.otp;
           if (dbOtp === req.body.otp) {
             const updatedUser = await VidishaBazaarUser.update({ _id: req.body.id }, { $set: { is_user_verified: true } });
             if (updatedUser) {
-              return next(ApiError.successServerCode({ errorMsg: null, successMsg: GENERIC_RESPONSE_MESSAGES.USER_VERIFIED, data }));
+              const userData = new UserModel(data);
+              return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.USER_VERIFIED, userData, true));
             } else {
-              console.log(error);
-              return next(ApiError.internalServerError({ errorMsg: GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR }));
+              console.error(error);
+              return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
             }
           } else {
-            return next(ApiError.unauthorizedServerError({ errorMsg: GENERIC_RESPONSE_MESSAGES.OTP_NOT_MATCHING }));
+            return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.OTP_NOT_MATCHING, undefined, false));
           }
         } else {
-          return next(ApiError.internalServerError({ errorMsg: GENERIC_RESPONSE_MESSAGES.OTP_USER_NOT_FOUND }));
+          return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.OTP_USER_NOT_FOUND, undefined, false));
         }
       })
       .catch((error) => {
-        console.log(error);
-        return next(ApiError.internalServerError({ errorMsg: GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR }));
+        console.error(error);
+        return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
       });
   } else {
-    return next(ApiError.badRequest({ errorMsg: GENERIC_RESPONSE_MESSAGES.OTP_USER_NOT_FOUND }));
+    return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.OTP_USER_NOT_FOUND, undefined, false));
   }
 };
 

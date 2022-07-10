@@ -18,6 +18,7 @@ const GENERIC_RESPONSE_MESSAGES = {
   OTP_USER_NOT_FOUND: "Otp or User is not found our database please try again later",
   OTP_REQUIRED: "Otp is required",
   USER_VERIFIED: "User is verified now",
+  USER_NOT_FOUND: "User not found please signup now",
   CATEGORY_NAME_REQUIRED: "Category name is required",
   LANGUAGE_REQUIRED: "Language name is required",
   ENGLISH_LANGUAGE_REQUIRED: "English language is required, because it is default language",
@@ -28,16 +29,14 @@ const GENERIC_RESPONSE_MESSAGES = {
   CATEGORY_NOT_FOUND: "Category not found",
   CATEGORY_UPDATED: "Category Update successfully",
   CATEGORY_DELETED: "Category deleted successfully",
-
+  SIGNIN_SUCESS: " logged in Successfully",
 
   SHOP_NAME_REQUIRED: "Shop name is required",
-  SHOP_OWNER_ID_REQUIRED:"Shop owner ID is required",
-  SHOP_CATEGORY_ID_REQUIRED:"Shop category ID is required",
-  SHOP_ADDRESS_REQUIRED:"Shop address is required",
-  SHOP_MOBILE_REQUIRED:"Shop mobile number is required",
-  SHOP_NOT_FOUND:"Shops not found, please try again later",
-
-
+  SHOP_OWNER_ID_REQUIRED: "Shop owner ID is required",
+  SHOP_CATEGORY_ID_REQUIRED: "Shop category ID is required",
+  SHOP_ADDRESS_REQUIRED: "Shop address is required",
+  SHOP_MOBILE_REQUIRED: "Shop mobile number is required",
+  SHOP_NOT_FOUND: "Shops not found, please try again later",
 };
 
 export default GENERIC_RESPONSE_MESSAGES;

@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import ApiError from "../middleware/ApiError.js";
+import ApiGenericResponse from "../middleware/ApiGenericResponse.js";
 import { getUserByMobileNumber } from "../services/userService.js";
 
 const auth = async (req, res, next) => {
@@ -15,16 +15,16 @@ const auth = async (req, res, next) => {
         if (isUserAuthentic && verifyUser) {
           next();
         } else {
-          return next(ApiError.badRequest({ errorMsg: "Data not matching with given details 1" }));
+          return next(ApiGenericResponse.badRequest({ errorMsg: "Data not matching with given details 1" }));
         }
       } else {
-        return next(ApiError.badRequest({ errorMsg: "Data not matching with given details 2" }));
+        return next(ApiGenericResponse.badRequest({ errorMsg: "Data not matching with given details 2" }));
       }
     } else {
-      return next(ApiError.badRequest({ errorMsg: "Mobile number and token is required 3" }));
+      return next(ApiGenericResponse.badRequest({ errorMsg: "Mobile number and token is required 3" }));
     }
   } catch (error) {
-    return next(ApiError.internalServerError({ errorMsg: "Internal server error"}));
+    return next(ApiGenericResponse.internalServerError({ errorMsg: "Internal server error"}));
   }
 };
 
