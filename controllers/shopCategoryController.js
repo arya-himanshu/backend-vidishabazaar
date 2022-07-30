@@ -38,12 +38,12 @@ const getAllShopCategory = async (req, res, next) => {
   const categories = await ShopCategory.find({});
   try {
     if (categories && categories.length) {
-      return next(ApiGenericResponse.successServerCode({ data: categories }));
+      return next(ApiGenericResponse.successServerCode("Success", categories, true ));
     } else {
-      return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.CATEGORY_NOT_FOUND));
+      return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.CATEGORY_NOT_FOUND,undefined,false));
     }
   } catch (er) {
-    return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR));
+    return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR,undefined,false));
   }
 };
 

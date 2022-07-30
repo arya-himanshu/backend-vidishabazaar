@@ -1,4 +1,5 @@
 const GENERIC_RESPONSE_MESSAGES = {
+  SUCCESS: "Success",
   INTERNAM_SERVER_ERROR: "Internal server error",
   SOMETHING_WENT_WRONG: "Something went wrong",
   PLEASE_TRY_AGAIN: "Please try again later",
@@ -37,6 +38,13 @@ const GENERIC_RESPONSE_MESSAGES = {
   SHOP_ADDRESS_REQUIRED: "Shop address is required",
   SHOP_MOBILE_REQUIRED: "Shop mobile number is required",
   SHOP_NOT_FOUND: "Shops not found, please try again later",
+  SHOP_CREATED_SUCCESSFULY: "Shop Created Successfully",
+
+  PRODUCT_NAME_REQUIRED: "Product name is required",
+  PRODUCT_PRICE_REQUIRED: "Product price is required",
+  PRODUCT_QUANTITY_REQUIRED: "Product quantity is required",
+
+
 };
 
 export default GENERIC_RESPONSE_MESSAGES;

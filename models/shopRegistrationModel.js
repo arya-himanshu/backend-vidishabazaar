@@ -55,6 +55,13 @@ const shopRegistrationSchema = new mongoose.Schema({
   shop_rating: {
     type: String,
   },
+  shop_image: {
+    type: String,
+  },
+  shop_id: {
+    type: String,
+  },
+
 
   is_shop_Physically_available: {
     type: Boolean,
