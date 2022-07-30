@@ -7,8 +7,8 @@ const auth = async (req, res, next) => {
     const { mobile, token } = req.headers;
     if (mobile && token) {
       const user = await getUserByMobileNumber(mobile);
-      if (user && user.data.mobile === mobile && user.data.tokens.length) {
-        const isUserAuthentic = user.data.tokens.filter((el) => {
+      if (user && user.mobile === mobile && user.tokens.length) {
+        const isUserAuthentic = user.tokens.filter((el) => {
           return el.token === token;
         });
         const verifyUser = jwt.verify(token, process.env.SECRET_KEY);
@@ -24,7 +24,7 @@ const auth = async (req, res, next) => {
       return next(ApiGenericResponse.badRequest({ errorMsg: "Mobile number and token is required 3" }));
     }
   } catch (error) {
-    return next(ApiGenericResponse.internalServerError({ errorMsg: "Internal server error"}));
+    return next(ApiGenericResponse.internalServerError({ errorMsg: "Internal server error" }));
   }
 };
 

@@ -3,7 +3,7 @@ class UserModel {
     this._id = user._id;
     this.name = user.name;
     this.dob = user.dob;
-    this.mobil = user.mobile;
+    this.mobile = user.mobile;
     this.email = user.email;
     this.is_user_active = user.is_user_active;
     this.is_user_verified = user.is_user_verified;

@@ -13,7 +13,8 @@ const userLogIn = async (request, response, next) => {
     if (!user.is_user_verified) {
       const updatedUser = await VidishaBazaarUser.update({ _id: request.body.id }, { $set: { otp: Math.floor(100000 + Math.random() * 900000) } });
       if (updatedUser) {
-        return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.USER_NOT_VERIFIED, undefined, false));
+        const userData = new UserModel(user);
+        return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.USER_NOT_VERIFIED, userData, true));
       } else {
         return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
       }
