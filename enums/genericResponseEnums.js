@@ -48,7 +48,11 @@ const GENERIC_RESPONSE_MESSAGES = {
   SHOP_ID_REQUIRED: "Shop ID required",
   PRODUCT_CREATED_SUCCESSFULY: "Product Created Successfully",
 
-
+  // search engine
+  TAG: "TAGS are required",
+  TAG_CREATED: "TAGS created successfully",
+  CATEGORY_URL_REQUIRED: "Category url is required",
+  CATEGORY_Id_REQUIRED: "Category id is required",
 };
 
 export default GENERIC_RESPONSE_MESSAGES;

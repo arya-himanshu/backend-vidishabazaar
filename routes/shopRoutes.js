@@ -1,7 +1,7 @@
 import express from "express";
 import * as shopCategory from "../controllers/shopCategoryController.js";
 import * as shopController from "../controllers/shopCRUDController.js";
-import  addShopProductController from "../controllers/addShopProductController.js";
+import  {addShopProductController }from "../controllers/addShopProductController.js";
 import { auth } from "../middleware/auth.js";
 const shopRoutes = express.Router();
 

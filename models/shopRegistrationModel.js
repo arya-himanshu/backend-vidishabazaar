@@ -62,11 +62,17 @@ const shopRegistrationSchema = new mongoose.Schema({
     type: String,
   },
 
-
   is_shop_Physically_available: {
     type: Boolean,
     required: true,
   },
+
+  tags: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
 
   last_updated: {
     type: Date,
