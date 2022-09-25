@@ -79,6 +79,28 @@ const shopRegistrationSchema = new mongoose.Schema({
     },
   ],
 
+  shopSearchString:  
+    {
+      type: String,
+      required: false,
+    },
+  days: [
+    {
+      type: String,
+      required: false,
+    },
+  ],
+
+  opening_time: {
+    type: String,
+    required: false,
+  },
+
+  closing_time: {
+    type: String,
+    required: false,
+  },
+
   last_updated: {
     type: Date,
     required: true,

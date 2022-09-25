@@ -19,9 +19,18 @@ const shopProductSchema = new mongoose.Schema({
     required: true,
   },
 
+  quantity: {
+    type: String,
+    required: true,
+  },
+
   rating: {
     type: String,
   },
+  unit: {
+    type: String,
+  },
+
 
   photos: [
     {

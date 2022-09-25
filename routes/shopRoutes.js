@@ -1,7 +1,7 @@
 import express from "express";
 import * as shopCategory from "../controllers/shopCategoryController.js";
 import * as shopController from "../controllers/shopCRUDController.js";
-import { addShopProductController } from "../controllers/addShopProductController.js";
+import { addShopProductController, updateProduct, deleteProductById } from "../controllers/addShopProductController.js";
 import { auth } from "../middleware/auth.js";
 const shopRoutes = express.Router();
 
@@ -18,5 +18,7 @@ shopRoutes.route("/get-shop-with-id/:id").get(shopController.getShopWithId);
 shopRoutes.route("/get-shops-with-user-id/:userId").get(shopController.getShospWithUserId);
 shopRoutes.route("/delete-shop/:id").delete(auth, shopController.deleteShopById);
 shopRoutes.route("/update-shop").post(auth, shopController.updateShop);
+shopRoutes.route("/delete-product/:id").delete(auth, deleteProductById);
+shopRoutes.route("/update-product").post(auth, updateProduct);
 
 export { shopRoutes };

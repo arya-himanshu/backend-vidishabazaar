@@ -53,7 +53,7 @@ const userSignUp = async (request, response, next) => {
           console.error(GENERIC_RESPONSE_MESSAGES.TOKEN_NOT_INSERTED);
         }
         const registeredUser = await user.save();
-         if (registeredUser) {
+        if (registeredUser) {
           const userData = new UserModel(registeredUser);
           return next(ApiGenericResponse.successServerCode("User created successfully", userData, true));
         } else {
@@ -62,10 +62,10 @@ const userSignUp = async (request, response, next) => {
       }
     })
     .catch((error) => {
+      console.error(error);
       if (error && error.errors && error.errors.mobile) {
         return next(ApiGenericResponse.internalServerError(error.errors.mobile.message, undefined, false));
       } else {
-        console.log(error);
         return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
       }
     });

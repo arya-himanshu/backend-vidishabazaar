@@ -36,9 +36,7 @@ connection.on("error", (error) => {
 });
 
 // On successful connection
-connection.on("connected", () => {
-  console.log("Connected to database");
-});
+connection.on("connected", () => {});
 
 // Body parser middleware
 app.use(express.json());

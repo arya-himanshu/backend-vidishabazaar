@@ -28,7 +28,6 @@ const searchEngineTag = async (req, res, next) => {
 const searchCategoryWithTags = async (req, res, next) => {
   const {tags} = req.body;
   try {
-      console.log(tags)
     const searchData = await SearchTagsModel.find({ favoriteFood : { $all : tags }} );
     res.send(searchData);
   } catch (er) {}

@@ -5,19 +5,18 @@ import { VidishaBazaarUser } from "../models/userModel.js";
 import { getProductsWithShopId } from "./addShopProductController.js";
 import GenericShopModel from "../services/GenericShopModel.js";
 const creatingShop = async (req, res, next) => {
-  const { shop_name, shop_gst_number, shop_owner_user_id, shop_address, shop_city, shop_pincode, shop_mobile, shop_category_id, shop_image, is_shop_Physically_available, shop_id, description ,shop_tags} = req.body;
+  const { shop_name, shop_gst_number, shop_owner_user_id, shop_address, shop_city, shop_pincode, shop_mobile, shop_category_id, shop_image, is_shop_Physically_available, shop_id, description, shop_tags, opening_time, closing_time, days, shopSearchString } = req.body;
   if (!shop_name) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_NAME_REQUIRED, undefined, false));
   if (!shop_owner_user_id) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_OWNER_ID_REQUIRED, undefined, false));
   if (!shop_mobile) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_MOBILE_REQUIRED, undefined, false));
   if (!shop_category_id) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_CATEGORY_ID_REQUIRED, undefined, false));
   if (!shop_address) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_ADDRESS_REQUIRED, undefined, false));
-  console.log(shop_tags)
   try {
-    const shop = await ShopModel({ shop_name, shop_gst_number: shop_gst_number, shop_owner_user_id, shop_address, shop_city, shop_pincode, shop_mobile, shop_category_id, shop_image, is_shop_Physically_available, last_updated: new Date(), created_at: new Date(), is_shop_varified: false, is_shop_active: false, is_shop_Physically_available: true, shop_id, description ,shop_tags : shop_tags});
+    const shop = await ShopModel({ shop_name, shop_gst_number: shop_gst_number, shop_owner_user_id, shop_address, shop_city, shop_pincode, shop_mobile, shop_category_id, shop_image, is_shop_Physically_available, last_updated: new Date(), created_at: new Date(), is_shop_varified: false, is_shop_active: false, is_shop_Physically_available: true, shop_id, description, shop_tags: shop_tags, opening_time, closing_time, days, shopSearchString });
     if (shop) {
       const registeredShop = await shop.save();
       if (registeredShop) {
-        const x = await VidishaBazaarUser.update({ _id: shop_owner_user_id }, { $set: { userRole: "ADMIN" } });
+        await VidishaBazaarUser.update({ _id: shop_owner_user_id }, { $set: { userRole: "ADMIN" } });
         return res.status(201).send(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.SHOP_CREATED_SUCCESSFULY, registeredShop, true));
       } else {
         return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
@@ -26,7 +25,7 @@ const creatingShop = async (req, res, next) => {
       return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
     }
   } catch (er) {
-    console.log(er);
+    console.error(er);
     return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
   }
 };
@@ -34,15 +33,17 @@ const creatingShop = async (req, res, next) => {
 const getAllShops = async (req, res, next) => {
   try {
     const searchString = req.query.searchString;
+    const subCategoryId = req.query.subCategoryId;
     const pageNumber = req.query.pageNumber;
     const nPerPage = req && req.query.nPerPage && req.query.nPerPage ? req.query.nPerPage : 10;
     let shopsCount = await ShopModel.count();
     let shops;
-    if (searchString && searchString.length) {
-      shops = await ShopModel.find({ shop_name: { $regex: searchString, $options: "i" } })
+    if (searchString || subCategoryId) {
+      shops = await ShopModel.find({ $text: { $search: `${searchString ? searchString : ""} ${subCategoryId ? subCategoryId : ""}` } })
+        .sort({ _id: 1 })
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
         .limit(nPerPage);
-      shopsCount = await (await ShopModel.find({ shop_name: { $regex: searchString, $options: "i" } })).length;
+      shopsCount = shops.length;
     } else {
       shops = await ShopModel.find({})
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
@@ -52,10 +53,10 @@ const getAllShops = async (req, res, next) => {
     if (shops && shops.length) {
       return next(ApiGenericResponse.successServerCode("Success", { shops, itemsCount: shopsCount }, true));
     } else {
-      return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.SHOP_NOT_FOUND, undefined, false));
+      return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.SHOP_NOT_FOUND, { shops: [], itemsCount: 0 }, true));
     }
   } catch (er) {
-    console.log(er);
+    console.error(er);
     return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
   }
 };
@@ -94,7 +95,6 @@ const getShopWithId = async (req, res, next) => {
 const getShospWithUserId = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    console.log(userId);
     const shops = await ShopModel.find({ shop_owner_user_id: userId });
     if (shops && shops.length) {
       return next(ApiGenericResponse.successServerCode("Success", shops, true));
@@ -109,7 +109,7 @@ const getShospWithUserId = async (req, res, next) => {
 const deleteShopById = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const deletedShop = await ShopModel.deleteOne({ id });
+    const deletedShop = await ShopModel.deleteOne({ _id: id });
     if (!deletedShop) {
       return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
     } else {
@@ -121,18 +121,16 @@ const deleteShopById = async (req, res, next) => {
 };
 
 const updateShop = async (req, res, next) => {
-  const { shop_name, shop_address, shop_mobile, shop_category_id, shop_image, description, shop_id , shop_tags} = req.body;
+  const { shop_name, shop_address, shop_mobile, shop_category_id, shop_image, description, shop_id, shop_tags, opening_time, closing_time, days, shopSearchString } = req.body;
   try {
-    console.log(req.body);
-    const updatedShop = await ShopModel.update({ _id: req.body._id }, { $set: {shop_name, shop_address, shop_mobile, shop_category_id, shop_image, description, shop_id, shop_tags,last_updated: new Date()} });
+    const updatedShop = await ShopModel.update({ _id: req.body._id }, { $set: { shop_name, shop_address, shop_mobile, shop_category_id, shop_image, description, shop_id, shop_tags, last_updated: new Date(), opening_time, closing_time, days, shopSearchString } });
     if (updatedShop) {
       return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.SUCCESS, updatedShop, true));
     } else {
       return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
     }
   } catch (er) {
-    console.log(er);
-
+    console.error(er);
     return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
   }
 };

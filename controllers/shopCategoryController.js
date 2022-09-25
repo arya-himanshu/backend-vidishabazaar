@@ -38,12 +38,12 @@ const getAllShopCategory = async (req, res, next) => {
   const categories = await ShopCategory.find({});
   try {
     if (categories && categories.length) {
-      return next(ApiGenericResponse.successServerCode("Success", categories, true ));
+      return next(ApiGenericResponse.successServerCode("Success", categories, true));
     } else {
-      return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.CATEGORY_NOT_FOUND,undefined,false));
+      return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.CATEGORY_NOT_FOUND, undefined, false));
     }
   } catch (er) {
-    return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR,undefined,false));
+    return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
   }
 };
 
@@ -60,7 +60,7 @@ const getCategoryById = async (req, res, next) => {
       return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.CATEGORY_NOT_FOUND));
     }
   } catch (er) {
-    console.log(er);
+    console.error(er);
     return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR));
   }
 };
@@ -95,7 +95,7 @@ const updateCategorybyId = async (req, res, next) => {
 const deleteCategoryById = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const deletedCategory = await ShopCategory.deleteOne({ id });
+    const deletedCategory = await ShopCategory.deleteOne({ _id: id });
     if (!deletedCategory) {
       return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR));
     } else {

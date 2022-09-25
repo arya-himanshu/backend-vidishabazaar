@@ -4,7 +4,6 @@ import GENERIC_RESPONSE_MESSAGES from "../enums/genericResponseEnums.js";
 
 const createUserRole = async (req, res, next) => {
   const { role_type } = req.body;
-  console.log(req.body);
   if (!role_type) {
     return next(ApiGenericResponse.badRequest({ errorMsg: GENERIC_RESPONSE_MESSAGES.ROLE_IS_REQUIRED }));
   }

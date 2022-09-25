@@ -14,6 +14,9 @@ class GenericShopModel {
     this.products = products ? products : [];
     this.shop_tags = shop.shop_tags ? shop.shop_tag : [];
     this.description = shop.description;
+    this.opening_time = shop.opening_time;
+    this.closing_time = shop.closing_time;
+    this.days = shop.days;
   }
 }
 
