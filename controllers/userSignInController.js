@@ -25,7 +25,7 @@ const userLogIn = async (request, response, next) => {
         const userData = new UserModel(user);
         return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.SIGNIN_SUCESS, userData, true));
       } else if (!error) {
-        return next(ApiGenericResponse.unauthorizedServerError(GENERIC_RESPONSE_MESSAGES.MOBILE_OR_PASSWORD_NOT_MATCHINF, undefined, false));
+        return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.MOBILE_OR_PASSWORD_NOT_MATCHINF, undefined, false));
       } else if (error) {
         return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR + " " + error, undefined, false));
       }

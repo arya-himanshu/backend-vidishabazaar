@@ -1,16 +1,11 @@
 import mongoose from "mongoose";
 
 const shopProductSchema = new mongoose.Schema({
-  name: {
+  product_name: {
     type: String,
     required: true,
   },
-  
-  title: {
-    type: String,
-  },
-
-  description: {
+  product_description: {
     type: String,
   },
 
@@ -28,21 +23,11 @@ const shopProductSchema = new mongoose.Schema({
     type: String,
   },
 
-  quantity_available: {
-    type: String,
-    required: true,
-  },
-
   photos: [
     {
       type: String,
     },
   ],
-
-  is_product_in_stock: {
-    type: Boolean,
-    required: 232,
-  },
 
   last_updated: {
     type: Date,
@@ -55,6 +40,6 @@ const shopProductSchema = new mongoose.Schema({
   },
 });
 
-const ShoProductpModel = mongoose.model("shopProduct", shopProductSchema);
+const ShoProductpModel = mongoose.model("shop-product", shopProductSchema);
 
-export { ShoProductpModel };
+export default ShoProductpModel ;

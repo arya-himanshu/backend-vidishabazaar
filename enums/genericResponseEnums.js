@@ -32,6 +32,7 @@ const GENERIC_RESPONSE_MESSAGES = {
   CATEGORY_DELETED: "Category deleted successfully",
   SIGNIN_SUCESS: " logged in Successfully",
 
+  // Shop
   SHOP_NAME_REQUIRED: "Shop name is required",
   SHOP_OWNER_ID_REQUIRED: "Shop owner ID is required",
   SHOP_CATEGORY_ID_REQUIRED: "Shop category ID is required",
@@ -40,9 +41,12 @@ const GENERIC_RESPONSE_MESSAGES = {
   SHOP_NOT_FOUND: "Shops not found, please try again later",
   SHOP_CREATED_SUCCESSFULY: "Shop Created Successfully",
 
+  // Product
   PRODUCT_NAME_REQUIRED: "Product name is required",
   PRODUCT_PRICE_REQUIRED: "Product price is required",
   PRODUCT_QUANTITY_REQUIRED: "Product quantity is required",
+  SHOP_ID_REQUIRED: "Shop ID required",
+  PRODUCT_CREATED_SUCCESSFULY: "Product Created Successfully",
 
 
 };

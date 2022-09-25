@@ -49,6 +49,11 @@ const userSchema = new mongoose.Schema({
       },
     },
   ],
+  userRole: {
+    type: String,
+    required: true,
+    default: "USER",
+  },
   last_updated: {
     type: Date,
     required: true,
@@ -71,10 +76,10 @@ const userSchema = new mongoose.Schema({
 
 userSchema.methods.generateAuthToken = async function () {
   try {
-      const token = jwt.sign({ _id: this.id }, process.env.SECRET_KEY);
-      this.tokens = this.tokens.concat({ token });
-      await this.save();
-      return token;
+    const token = jwt.sign({ _id: this.id }, process.env.SECRET_KEY);
+    this.tokens = this.tokens.concat({ token });
+    await this.save();
+    return token;
   } catch (error) {
     console.error(error);
   }
