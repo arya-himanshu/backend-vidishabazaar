@@ -12,7 +12,8 @@ class GenericShopModel {
     this.last_updated = shop.last_updated;
     this.created_at = shop.created_at;
     this.products = products ? products : [];
-    this.tags = shop.tags;
+    this.shop_tags = shop.shop_tags ? shop.shop_tag : [];
+    this.description = shop.description;
   }
 }
 

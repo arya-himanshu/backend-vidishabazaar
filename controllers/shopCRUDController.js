@@ -1,20 +1,19 @@
 import { ShopModel } from "../models/shopRegistrationModel.js";
 import ApiGenericResponse from "../middleware/ApiGenericResponse.js";
 import GENERIC_RESPONSE_MESSAGES from "../enums/genericResponseEnums.js";
-import { getUserById } from "../services/userService.js";
 import { VidishaBazaarUser } from "../models/userModel.js";
 import { getProductsWithShopId } from "./addShopProductController.js";
 import GenericShopModel from "../services/GenericShopModel.js";
 const creatingShop = async (req, res, next) => {
-  const { shop_name, shop_gst_number, tags, shop_owner_user_id, shop_address, shop_city, shop_pincode, shop_mobile, shop_category_id, shop_image, is_shop_Physically_available, shop_id } = req.body;
+  const { shop_name, shop_gst_number, shop_owner_user_id, shop_address, shop_city, shop_pincode, shop_mobile, shop_category_id, shop_image, is_shop_Physically_available, shop_id, description ,shop_tags} = req.body;
   if (!shop_name) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_NAME_REQUIRED, undefined, false));
   if (!shop_owner_user_id) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_OWNER_ID_REQUIRED, undefined, false));
   if (!shop_mobile) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_MOBILE_REQUIRED, undefined, false));
   if (!shop_category_id) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_CATEGORY_ID_REQUIRED, undefined, false));
   if (!shop_address) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_ADDRESS_REQUIRED, undefined, false));
-
+  console.log(shop_tags)
   try {
-    const shop = await ShopModel({ shop_name, shop_gst_number: shop_gst_number, tags, shop_owner_user_id, shop_address, shop_city, shop_pincode, shop_mobile, shop_category_id, shop_image, is_shop_Physically_available, last_updated: new Date(), created_at: new Date(), is_shop_varified: false, is_shop_active: false, is_shop_Physically_available: true, shop_id });
+    const shop = await ShopModel({ shop_name, shop_gst_number: shop_gst_number, shop_owner_user_id, shop_address, shop_city, shop_pincode, shop_mobile, shop_category_id, shop_image, is_shop_Physically_available, last_updated: new Date(), created_at: new Date(), is_shop_varified: false, is_shop_active: false, is_shop_Physically_available: true, shop_id, description ,shop_tags : shop_tags});
     if (shop) {
       const registeredShop = await shop.save();
       if (registeredShop) {
@@ -92,4 +91,50 @@ const getShopWithId = async (req, res, next) => {
   }
 };
 
-export { creatingShop, getAllShops, getShopsWithName, getShopWithId };
+const getShospWithUserId = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    console.log(userId);
+    const shops = await ShopModel.find({ shop_owner_user_id: userId });
+    if (shops && shops.length) {
+      return next(ApiGenericResponse.successServerCode("Success", shops, true));
+    } else {
+      return next(ApiGenericResponse.successServerCode("Sorry,no shop found", [], true));
+    }
+  } catch (er) {
+    return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
+  }
+};
+
+const deleteShopById = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const deletedShop = await ShopModel.deleteOne({ id });
+    if (!deletedShop) {
+      return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
+    } else {
+      return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.DELETE_SHOP_SUCCESS, undefined, true));
+    }
+  } catch (er) {
+    return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR));
+  }
+};
+
+const updateShop = async (req, res, next) => {
+  const { shop_name, shop_address, shop_mobile, shop_category_id, shop_image, description, shop_id , shop_tags} = req.body;
+  try {
+    console.log(req.body);
+    const updatedShop = await ShopModel.update({ _id: req.body._id }, { $set: {shop_name, shop_address, shop_mobile, shop_category_id, shop_image, description, shop_id, shop_tags,last_updated: new Date()} });
+    if (updatedShop) {
+      return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.SUCCESS, updatedShop, true));
+    } else {
+      return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
+    }
+  } catch (er) {
+    console.log(er);
+
+    return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
+  }
+};
+
+export { creatingShop, getAllShops, getShopsWithName, getShopWithId, getShospWithUserId, deleteShopById, updateShop };

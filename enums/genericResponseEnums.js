@@ -40,6 +40,7 @@ const GENERIC_RESPONSE_MESSAGES = {
   SHOP_MOBILE_REQUIRED: "Shop mobile number is required",
   SHOP_NOT_FOUND: "Shops not found, please try again later",
   SHOP_CREATED_SUCCESSFULY: "Shop Created Successfully",
+  DELETE_SHOP_SUCCESS : 'shop was successfully deleted',
 
   // Product
   PRODUCT_NAME_REQUIRED: "Product name is required",

@@ -55,6 +55,11 @@ const shopRegistrationSchema = new mongoose.Schema({
   shop_rating: {
     type: String,
   },
+
+  description: {
+    type: String,
+  },
+
   shop_image: {
     type: String,
   },
@@ -67,10 +72,10 @@ const shopRegistrationSchema = new mongoose.Schema({
     required: true,
   },
 
-  tags: [
+  shop_tags: [
     {
-      type: String,
-      required: true,
+      type: Object,
+      required: false,
     },
   ],
 
