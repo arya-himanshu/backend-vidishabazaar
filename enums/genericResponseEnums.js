@@ -40,7 +40,7 @@ const GENERIC_RESPONSE_MESSAGES = {
   SHOP_MOBILE_REQUIRED: "Shop mobile number is required",
   SHOP_NOT_FOUND: "Shops not found, please try again later",
   SHOP_CREATED_SUCCESSFULY: "Shop Created Successfully",
-  DELETE_SHOP_SUCCESS : 'shop was successfully deleted',
+  DELETE_SHOP_SUCCESS: "shop was successfully deleted",
 
   // Product
   PRODUCT_NAME_REQUIRED: "Product name is required",
@@ -54,6 +54,12 @@ const GENERIC_RESPONSE_MESSAGES = {
   TAG_CREATED: "TAGS created successfully",
   CATEGORY_URL_REQUIRED: "Category url is required",
   CATEGORY_Id_REQUIRED: "Category id is required",
+
+  // Language translate
+  LANGUAGE_STRING: "Please provide language string",
+  SUCCESS_LANGUAGE_STRING: "Success created language string",
+  STRING_TEXT: "String text is required",
+  STRING_NOT_FOUND: "String not found",
 };
 
 export default GENERIC_RESPONSE_MESSAGES;

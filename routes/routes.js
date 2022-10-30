@@ -1,5 +1,6 @@
 import express from "express";
 import categoryRoute from "./businessCategoryRoutes.js";
+import languageTranslateRoute from "./languageTranslate.js";
 import { searchEngineRoutes } from "./searchEngineRoutes.js";
 import { shopRoutes } from "./shopRoutes.js";
 import { logInSignUpRoute } from "./userLogInSignUpRoutes.js";
@@ -19,5 +20,7 @@ router.use("/user", userRoute);
 router.use("/business-category", categoryRoute);
 
 router.use("/search-engine", searchEngineRoutes);
+
+router.use("/language-translate", languageTranslateRoute);
 
 export default router;
