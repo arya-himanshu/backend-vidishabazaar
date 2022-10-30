@@ -3,22 +3,26 @@ import GENERIC_RESPONSE_MESSAGES from "../enums/genericResponseEnums.js";
 import { BusinessCategory } from "../models/businessCategoryModel.js";
 
 const createCategory = (req, res, next) => {
-  const { category_name, language } = req.body;
+  const { category_name, language, url_path } = req.body;
   if (!category_name) {
     return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.CATEGORY_NAME_REQUIRED, undefined, false));
   }
 
+  if (!url_path) {
+    return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.URL_PATH_REQUIRED, undefined, false));
+  }
+
   if (!language) {
     return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.LANGUAGE_REQUIRED, undefined, false));
-  } else if (language && !language.english) {
+  } else if (language && !language.in_eg) {
     return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.ENGLISH_LANGUAGE_REQUIRED, undefined, false));
   }
   try {
     isCategoryAlresdyCreated(category_name, async (error, response) => {
       if (error) {
-        return next(ApiGenericResponse.successServerCode(response.message.replace("${category_name}", language.english), undefined, false));
+        return next(ApiGenericResponse.successServerCode(response.message.replace("${category_name}", language.in_eg), undefined, false));
       } else {
-        const category = new BusinessCategory({ category_name, language, last_updated: new Date(), created_at: new Date() });
+        const category = new BusinessCategory({ category_name, url_path, language, last_updated: new Date(), created_at: new Date() });
         const registeredCategory = await category.save();
         if (registeredCategory) {
           return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.CATEGORY_CREATED, registeredCategory, true));

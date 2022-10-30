@@ -6,7 +6,7 @@ import { auth } from "../middleware/auth.js";
 const shopRoutes = express.Router();
 
 shopRoutes.route("/shop-category").post(auth, shopCategory.shopCategory);
-shopRoutes.route("/shop-categories").get(auth, shopCategory.getAllShopCategory);
+shopRoutes.route("/shop-categories").get(shopCategory.getAllShopCategory);
 shopRoutes.route("/shop-category/:id").get(auth, shopCategory.getCategoryById);
 shopRoutes.route("/update-shop-category/:id").put(auth, shopCategory.updateCategorybyId);
 shopRoutes.route("/delete-shop-category/:id").delete(auth, shopCategory.deleteCategoryById);

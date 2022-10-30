@@ -21,6 +21,7 @@ const GENERIC_RESPONSE_MESSAGES = {
   USER_VERIFIED: "User is verified now",
   USER_NOT_FOUND: "User not found please signup now",
   CATEGORY_NAME_REQUIRED: "Category name is required",
+  URL_PATH_REQUIRED: "URL path is required",
   LANGUAGE_REQUIRED: "Language name is required",
   ENGLISH_LANGUAGE_REQUIRED: "English language is required, because it is default language",
   CATEGORY_CREATED: "Category was successfully created.",
@@ -60,6 +61,7 @@ const GENERIC_RESPONSE_MESSAGES = {
   SUCCESS_LANGUAGE_STRING: "Success created language string",
   STRING_TEXT: "String text is required",
   STRING_NOT_FOUND: "String not found",
+  STRING_ALREADY_EXIST: "String already exist",
 };
 
 export default GENERIC_RESPONSE_MESSAGES;

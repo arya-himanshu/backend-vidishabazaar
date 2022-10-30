@@ -10,14 +10,14 @@ const shopCategory = (req, res, next) => {
 
   if (!language) {
     return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.LANGUAGE_REQUIRED));
-  } else if (language && !language.english) {
+  } else if (language && !language.in_eg) {
     return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.ENGLISH_LANGUAGE_REQUIRED));
   }
 
   try {
     isCategoryAlresdyCreated(category_name, async (error, response) => {
       if (error) {
-        return next(ApiGenericResponse.badRequest(response.message.replace("${category_name}", language.english)));
+        return next(ApiGenericResponse.badRequest(response.message.replace("${category_name}", language.in_eg)));
       } else {
         const category = new ShopCategory({ category_name, language, last_updated: new Date(), created_at: new Date() });
         const registeredCategory = await category.save();
