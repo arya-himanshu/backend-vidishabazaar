@@ -24,6 +24,7 @@ const auth = async (req, res, next) => {
       return next(ApiGenericResponse.badRequest({ errorMsg: "Mobile number and token is required 3" }));
     }
   } catch (error) {
+    console.error(error);
     return next(ApiGenericResponse.internalServerError({ errorMsg: "Internal server error" }));
   }
 };

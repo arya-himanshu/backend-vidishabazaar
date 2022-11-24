@@ -2,6 +2,7 @@ const GENERIC_RESPONSE_MESSAGES = {
   SUCCESS: "Success",
   INTERNAM_SERVER_ERROR: "Internal server error",
   SOMETHING_WENT_WRONG: "Something went wrong",
+  NO_RESULT_FOUND: "No result found",
   PLEASE_TRY_AGAIN: "Please try again later",
   ROLE_IS_REQUIRED: "Role is required",
   USER_NOT_VERIFIED: "User is not verified",
@@ -62,6 +63,8 @@ const GENERIC_RESPONSE_MESSAGES = {
   STRING_TEXT: "String text is required",
   STRING_NOT_FOUND: "String not found",
   STRING_ALREADY_EXIST: "String already exist",
+
+  //metrics
 };
 
 export default GENERIC_RESPONSE_MESSAGES;

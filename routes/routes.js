@@ -1,6 +1,8 @@
 import express from "express";
 import categoryRoute from "./businessCategoryRoutes.js";
+import { customerInteractionDataRoutes } from "./customerInteractionDataRoute.js";
 import languageTranslateRoute from "./languageTranslate.js";
+import recentActivityRoutes from "./recentActivityRoutes.js";
 import { searchEngineRoutes } from "./searchEngineRoutes.js";
 import { shopRoutes } from "./shopRoutes.js";
 import { logInSignUpRoute } from "./userLogInSignUpRoutes.js";
@@ -22,5 +24,9 @@ router.use("/business-category", categoryRoute);
 router.use("/search-engine", searchEngineRoutes);
 
 router.use("/language-translate", languageTranslateRoute);
+
+router.use("/c-i-d", customerInteractionDataRoutes);
+
+router.use("/recent-activity", recentActivityRoutes);
 
 export default router;

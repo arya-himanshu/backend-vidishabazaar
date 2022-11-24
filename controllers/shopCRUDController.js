@@ -106,6 +106,14 @@ const getShospWithUserId = async (req, res, next) => {
   }
 };
 
+const getShopsIdsByUserId = async (userId) => {
+  return ShopModel.find({ shop_owner_user_id: userId }, { _id: 1 }).sort({ _id: 1 });
+};
+
+const getShopsWithShopIds = async (shopIds) => {
+  return await ShopModel.find({ _id: shopIds }, { shop_tags: 0, days: 0, created_at: 0 }).sort({ _id: 1 });
+};
+
 const deleteShopById = async (req, res, next) => {
   const { id } = req.params;
   try {
@@ -135,4 +143,8 @@ const updateShop = async (req, res, next) => {
   }
 };
 
-export { creatingShop, getAllShops, getShopsWithName, getShopWithId, getShospWithUserId, deleteShopById, updateShop };
+const getRandomShops = async (limit) => {
+  return await ShopModel.find().limit(limit).sort({ _id: 1 });
+};
+
+export { creatingShop, getAllShops, getShopsWithName, getShopWithId, getShospWithUserId, deleteShopById, updateShop, getShopsIdsByUserId, getShopsWithShopIds, getRandomShops };

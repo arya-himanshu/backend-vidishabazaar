@@ -4,7 +4,6 @@ import GENERIC_RESPONSE_MESSAGES from "../enums/genericResponseEnums.js";
 import ShoProductpModel from "../models/shopProduct.js";
 const addShopProductController = async (req, res, next) => {
   const { product_name, product_description, price, photos, quantity, shop_id, unit } = req.body;
-
   if (!product_name) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.PRODUCT_NAME_REQUIRED, undefined, false));
   if (!shop_id) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_ID_REQUIRED, undefined, false));
   if (!price) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.PRODUCT_PRICE_REQUIRED, undefined, false));
