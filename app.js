@@ -37,7 +37,6 @@ connection.on("error", (error) => {
 
 // On successful connection
 connection.on("connected", () => {
-  console.log("Database connected");
 });
 
 // Body parser middleware

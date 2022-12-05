@@ -25,7 +25,6 @@ const addHomeBannerAds = async (req, res, next) => {
     return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.NO_PERMISSION, undefined, false));
   }
   const existingBanner = await getAllBanner();
-  console.log(existingBanner);
   if (existingBanner && existingBanner.length >= 3) {
     return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.BANNER_ALREDY_FULL, undefined, false));
   }

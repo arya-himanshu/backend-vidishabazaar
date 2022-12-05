@@ -39,7 +39,6 @@ const getAllTranslateStrings = async (req, res, next) => {
       }, {});
       return next(ApiGenericResponse.successServerCode("Success", result, true));
     } else {
-      console.log(strings)
       return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.STRING_NOT_FOUND, undefined, false));
     }
   } catch (er) {

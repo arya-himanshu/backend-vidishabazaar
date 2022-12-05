@@ -32,7 +32,7 @@ const customerInteractionDataSchema = new mongoose.Schema({
     type: String,
   },
 
-  subcategory_id: {
+  sub_category_id: {
     type: String,
   },
 

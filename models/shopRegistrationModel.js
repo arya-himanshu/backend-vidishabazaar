@@ -108,6 +108,11 @@ const shopRegistrationSchema = new mongoose.Schema({
     required: false,
   },
 
+  otp: {
+    type: String,
+    required: true,
+  },
+
   last_updated: {
     type: Date,
     required: true,

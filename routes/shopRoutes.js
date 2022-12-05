@@ -10,6 +10,7 @@ shopRoutes.route("/shop-categories").get(shopCategory.getAllShopCategory);
 shopRoutes.route("/shop-category/:id").get(auth, shopCategory.getCategoryById);
 shopRoutes.route("/update-shop-category/:id").put(auth, shopCategory.updateCategorybyId);
 shopRoutes.route("/delete-shop-category/:id").delete(auth, shopCategory.deleteCategoryById);
+shopRoutes.route("/shop-otp-varification").post(auth, shopController.otpVarificationForShop);
 shopRoutes.route("/shop-registration").post(auth, shopController.creatingShop);
 shopRoutes.route("/shops").get(shopController.getAllShops);
 shopRoutes.route("/add-shop-product").post(auth, addShopProductController);

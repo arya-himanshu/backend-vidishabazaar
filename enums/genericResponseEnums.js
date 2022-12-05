@@ -35,6 +35,7 @@ const GENERIC_RESPONSE_MESSAGES = {
   SIGNIN_SUCESS: " logged in Successfully",
 
   // Shop
+  SHOP_ID_REQUIRED: "Shop ID is required",
   SHOP_NAME_REQUIRED: "Shop name is required",
   SHOP_OWNER_ID_REQUIRED: "Shop owner ID is required",
   SHOP_CATEGORY_ID_REQUIRED: "Shop category ID is required",
@@ -43,6 +44,7 @@ const GENERIC_RESPONSE_MESSAGES = {
   SHOP_NOT_FOUND: "Shops not found, please try again later",
   SHOP_CREATED_SUCCESSFULY: "Shop Created Successfully",
   DELETE_SHOP_SUCCESS: "shop was successfully deleted",
+  SHOP_SUCCESS_VARIFIED: "shop was successfully varified",
 
   // Product
   PRODUCT_NAME_REQUIRED: "Product name is required",

@@ -3,7 +3,6 @@ import ApiGenericResponse from "../middleware/ApiGenericResponse.js";
 import { getUserByMobileNumber, getUserById } from "../services/userService.js";
 import GENERIC_RESPONSE_MESSAGES from "../enums/genericResponseEnums.js";
 import UserModel from "../services/UserModel.js";
-import GenericServerResPonseForAll from "../services/GenericServerResPonseForAll.js";
 
 const userSignUp = async (request, response, next) => {
   const { name, dob, mobile, email, password, confirm_password } = request.body;
