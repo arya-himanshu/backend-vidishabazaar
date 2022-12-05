@@ -1,4 +1,5 @@
 import express from "express";
+import bazarAdsRoutes from "./bazarAdsRoutes.js";
 import categoryRoute from "./businessCategoryRoutes.js";
 import { customerInteractionDataRoutes } from "./customerInteractionDataRoute.js";
 import languageTranslateRoute from "./languageTranslate.js";
@@ -28,5 +29,7 @@ router.use("/language-translate", languageTranslateRoute);
 router.use("/c-i-d", customerInteractionDataRoutes);
 
 router.use("/recent-activity", recentActivityRoutes);
+
+router.use("/bazar-ads", bazarAdsRoutes);
 
 export default router;

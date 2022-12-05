@@ -1,12 +1,12 @@
 import GENERIC_RESPONSE_MESSAGES from "../enums/genericResponseEnums.js";
 import ApiGenericResponse from "../middleware/ApiGenericResponse.js";
-import {CustomerInteractionDataModel} from "../models/customerInteractionDataModel.js";
+import { CustomerInteractionDataModel } from "../models/customerInteractionDataModel.js";
 import { getShopsIdsByUserId } from "./shopCRUDController.js";
 
 const customerInteractionData = async (req, res, next) => {
-  const { session_id, user_id, unique_key, item_text, category_id, subcategory_id, shop_id } = req.body;
+  const { session_id, user_id, unique_key, item_text, category_id, subcategory_id, shop_id, banner_id } = req.body;
   try {
-    const generalMetrics = await CustomerInteractionDataModel({ session_id, item_text, user_id, unique_key, category_id, subcategory_id, shop_id, last_updated: new Date(), created_at: new Date() });
+    const generalMetrics = await CustomerInteractionDataModel({ session_id, item_text, user_id, unique_key, category_id, subcategory_id, shop_id, banner_id, last_updated: new Date(), created_at: new Date() });
     if (generalMetrics) {
       const createdMetrics = await generalMetrics.save();
       if (createdMetrics) {

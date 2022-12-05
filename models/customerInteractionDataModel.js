@@ -19,6 +19,10 @@ const customerInteractionDataSchema = new mongoose.Schema({
     required: false,
   },
 
+  banner_id: {
+    type: String,
+    required: false,
+  },
   shop_id: {
     type: String,
     required: false,

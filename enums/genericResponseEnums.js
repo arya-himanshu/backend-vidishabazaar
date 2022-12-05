@@ -64,7 +64,17 @@ const GENERIC_RESPONSE_MESSAGES = {
   STRING_NOT_FOUND: "String not found",
   STRING_ALREADY_EXIST: "String already exist",
 
-  //metrics
+  //ADS
+  BANNER_IMAGE_REQUIRED: "Banner image required",
+  CUSTOMER_MOBILE_REQUIRED: "Customer mobile number is required",
+  URL_REQURED: "URL is required",
+  BANNER_CREATED_SUCCESSFULLY: "Banner Ad created successfully",
+  BANNER_CREATION_FAILED: "Banner Ad creation failed",
+  NO_BANNER_FOUND: "No banner found",
+  BANNER_ALREDY_FULL: "No Slot available for banner",
+
+  //SUPER_ADMIN
+  NO_PERMISSION: "You don't have right access,please connect with admin",
 };
 
 export default GENERIC_RESPONSE_MESSAGES;

@@ -38,7 +38,19 @@ const getAllShops = async (req, res, next) => {
     const nPerPage = req && req.query.nPerPage && req.query.nPerPage ? req.query.nPerPage : 10;
     let shopsCount = await ShopModel.count();
     let shops;
-    if (searchString || subCategoryId) {
+    if (subCategoryId && searchString) {
+      shops = shops = await ShopModel.find({ shop_category_id: subCategoryId, $text: { $search: searchString } })
+        .sort({ _id: 1 })
+        .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
+        .limit(nPerPage);
+      shopsCount = shops.length;
+    } else if (subCategoryId) {
+      shops = shops = await ShopModel.find({ shop_category_id: subCategoryId })
+        .sort({ _id: 1 })
+        .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
+        .limit(nPerPage);
+      shopsCount = shops.length;
+    } else if (searchString) {
       shops = await ShopModel.find({ $text: { $search: `${searchString ? searchString : ""} ${subCategoryId ? subCategoryId : ""}` } })
         .sort({ _id: 1 })
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
@@ -49,7 +61,6 @@ const getAllShops = async (req, res, next) => {
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
         .limit(nPerPage);
     }
-
     if (shops && shops.length) {
       return next(ApiGenericResponse.successServerCode("Success", { shops, itemsCount: shopsCount }, true));
     } else {

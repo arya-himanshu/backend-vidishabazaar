@@ -40,6 +40,7 @@ const shopRegistrationSchema = new mongoose.Schema({
   shop_category_id: {
     type: String,
     required: true,
+    index: true,
   },
 
   shop_photo: {
@@ -118,7 +119,7 @@ const shopRegistrationSchema = new mongoose.Schema({
   },
 });
 
-shopRegistrationSchema.index({ shop_name: "text" }); // schema level
+shopRegistrationSchema.index({ shop_name: "text", shop_category_id: "text" }); // schema level
 
 const ShopModel = mongoose.model("shop", shopRegistrationSchema);
 

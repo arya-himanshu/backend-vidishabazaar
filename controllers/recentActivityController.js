@@ -26,10 +26,8 @@ const getRecentActivitiesData = async (cookieId, uniqueKey = "SHOP", limit) => {
       })
         .limit(limit)
         .sort({ created_at: -1 });
-      console.log(activities);
       if (activities && activities.length) {
         const shopIds = activities.map((act) => act.shop_id);
-        console.log(shopIds);
         const shops = await getShopsWithShopIds(shopIds);
         return shops;
       }

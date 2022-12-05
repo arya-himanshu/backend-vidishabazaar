@@ -13,7 +13,7 @@ const shopCategorySchema = new mongoose.Schema({
     in_hi: {
       type: String,
     },
-    hindi_english: {
+    hi_eg: {
       type: String,
     },
   },
