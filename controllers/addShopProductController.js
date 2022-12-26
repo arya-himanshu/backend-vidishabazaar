@@ -5,8 +5,8 @@ import { getHeaders } from "../middleware/auth.js";
 import { getShopWithUserId } from "./shopCRUDController.js";
 
 const addShopProductController = async (req, res, next) => {
-  const { product_name, product_description, price, photos, quantity, shop_id, unit } = req.body;
-  if (!product_name) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.PRODUCT_NAME_REQUIRED, undefined, false));
+  const { name, description, price, images, quantity, shop_id, unit } = req.body;
+  if (!name) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.PRODUCT_NAME_REQUIRED, undefined, false));
   if (!shop_id) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_ID_REQUIRED, undefined, false));
   if (!price) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.PRODUCT_PRICE_REQUIRED, undefined, false));
   if (!quantity) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.PRODUCT_QUANTITY_REQUIRED, undefined, false));
@@ -16,7 +16,7 @@ const addShopProductController = async (req, res, next) => {
     if (isRightAccess) {
       return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.NO_PERMISSION, undefined, false));
     }
-    const product = await ShoProductpModel({ product_name, product_description, price, photos, quantity, shop_id, last_updated: new Date(), created_at: new Date(), unit });
+    const product = await ShoProductpModel({ name, description, price, images, quantity, shop_id, last_updated: new Date(), created_at: new Date(), unit });
     if (product) {
       const registeredProduct = await product.save();
       if (registeredProduct) {
@@ -50,14 +50,14 @@ const getProductsWithShopId = async (shop_id) => {
 };
 
 const updateProduct = async (req, res, next) => {
-  const { product_name, product_description, price, quantity, unit } = req.body;
+  const { name, description, price, quantity, unit, images } = req.body;
   try {
     const { loginuserid } = getHeaders(req);
     const isRightAccess = await validatingUserCanReadWriteProduct(loginuserid, req.body._id);
     if (isRightAccess) {
       return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.NO_PERMISSION, undefined, false));
     }
-    const updatedProduct = await ShoProductpModel.update({ _id: req.body._id }, { $set: { product_name, product_description, price, quantity, last_updated: new Date(), unit } });
+    const updatedProduct = await ShoProductpModel.update({ _id: req.body._id }, { $set: { name, description, price, quantity, images, last_updated: new Date(), unit } });
     if (updatedProduct) {
       return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.SUCCESS, updatedProduct, true));
     } else {
@@ -99,7 +99,7 @@ const validatingUserCanReadWriteProduct = async (userId, productId) => {
   const product = await getProductById(productId);
   if (product) {
     const shop = await getShopWithUserId(product.shop_id);
-    if (shop && shop.shop_owner_user_id !== userId) {
+    if (shop && shop.owner_user_id !== userId) {
       return true;
     } else {
       return false;

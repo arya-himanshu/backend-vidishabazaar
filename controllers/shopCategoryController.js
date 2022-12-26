@@ -3,8 +3,8 @@ import ApiGenericResponse from "../middleware/ApiGenericResponse.js";
 import GENERIC_RESPONSE_MESSAGES from "../enums/genericResponseEnums.js";
 
 const shopCategory = (req, res, next) => {
-  const { category_name, language } = req.body;
-  if (!category_name) {
+  const { name, language } = req.body;
+  if (!name) {
     return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.CATEGORY_NAME_REQUIRED));
   }
 
@@ -15,11 +15,11 @@ const shopCategory = (req, res, next) => {
   }
 
   try {
-    isCategoryAlresdyCreated(category_name, async (error, response) => {
+    isCategoryAlresdyCreated(name, async (error, response) => {
       if (error) {
-        return next(ApiGenericResponse.badRequest(response.message.replace("${category_name}", language.in_eg)));
+        return next(ApiGenericResponse.badRequest(response.message.replace("${name}", language.in_eg)));
       } else {
-        const category = new ShopCategory({ category_name, language, last_updated: new Date(), created_at: new Date() });
+        const category = new ShopCategory({ name, language, last_updated: new Date(), created_at: new Date() });
         const registeredCategory = await category.save();
         if (registeredCategory) {
           return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.CATEGORY_CREATED));
@@ -65,8 +65,8 @@ const getCategoryById = async (req, res, next) => {
   }
 };
 
-const isCategoryAlresdyCreated = async (category_name, callback) => {
-  const category = await ShopCategory.findOne({ category_name });
+const isCategoryAlresdyCreated = async (name, callback) => {
+  const category = await ShopCategory.findOne({ name });
   if (category) {
     callback(true, { message: GENERIC_RESPONSE_MESSAGES.CATEGORY_ALREADY_CREATED });
   } else {
@@ -75,12 +75,12 @@ const isCategoryAlresdyCreated = async (category_name, callback) => {
 };
 
 const updateCategorybyId = async (req, res, next) => {
-  const { _id, category_name, language } = req.body;
+  const { _id, name, language } = req.body;
   if (!_id) {
     return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.CATEGORY_Id_REQUIRED));
   }
   try {
-    const updatedCatgory = await ShopCategory.updateOne({ _id: _id }, { $set: { category_name: category_name, language } });
+    const updatedCatgory = await ShopCategory.updateOne({ _id: _id }, { $set: { name: name, language } });
     if (!updatedCatgory) {
       return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SOMETHING_WENT_WRONG));
     } else {

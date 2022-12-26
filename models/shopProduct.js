@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 const shopProductSchema = new mongoose.Schema({
-  product_name: {
+  name: {
     type: String,
     required: true,
   },
-  product_description: {
+  description: {
     type: String,
   },
 
@@ -30,9 +30,7 @@ const shopProductSchema = new mongoose.Schema({
   unit: {
     type: String,
   },
-
-
-  photos: [
+  images: [
     {
       type: String,
     },
@@ -49,6 +47,6 @@ const shopProductSchema = new mongoose.Schema({
   },
 });
 
-const ShoProductpModel = mongoose.model("shop-product", shopProductSchema);
+const ShoProductpModel = mongoose.model("shop_product", shopProductSchema);
 
-export default ShoProductpModel ;
+export default ShoProductpModel;

@@ -19,6 +19,6 @@ const languageTranslateStringSchema = new mongoose.Schema({
   },
 });
 
-const TranslateLanguageString = new mongoose.model("language-string", languageTranslateStringSchema);
+const TranslateLanguageString = new mongoose.model("language_string", languageTranslateStringSchema);
 
 export { TranslateLanguageString };

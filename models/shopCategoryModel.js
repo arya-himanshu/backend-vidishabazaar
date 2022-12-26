@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const shopCategorySchema = new mongoose.Schema({
-  category_name: {
+  name: {
     required: true,
     type: String,
   },
@@ -27,6 +27,6 @@ const shopCategorySchema = new mongoose.Schema({
   },
 });
 
-const ShopCategory = mongoose.model("shop-category", shopCategorySchema);
+const ShopCategory = mongoose.model("shop_category", shopCategorySchema);
 
 export { ShopCategory };

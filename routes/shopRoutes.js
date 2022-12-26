@@ -21,5 +21,6 @@ shopRoutes.route("/delete-shop/:id").delete(auth, shopController.deleteShopById)
 shopRoutes.route("/update-shop").post(auth, shopController.updateShop);
 shopRoutes.route("/delete-product/:id").delete(auth, deleteProductById);
 shopRoutes.route("/update-product").post(auth, updateProduct);
+shopRoutes.route("/resend-shop-otp").post(auth, shopController.resendShopOtp);
 
 export { shopRoutes };

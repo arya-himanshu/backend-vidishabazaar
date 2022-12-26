@@ -1,50 +1,46 @@
 import mongoose from "mongoose";
 
 const shopRegistrationSchema = new mongoose.Schema({
-  shop_name: {
+  name: {
     type: String,
     required: true,
     indexe: true,
   },
 
-  shop_gst_number: {
+  gst_number: {
     type: String,
   },
 
-  shop_owner_user_id: {
-    type: String,
-    required: true,
-  },
-
-  shop_address: {
+  owner_user_id: {
     type: String,
     required: true,
-    indexe: true,
   },
 
-  shop_city: {
-    type: String,
-    indexe: true,
-  },
-
-  shop_pincode: {
-    type: String,
-  },
-
-  shop_mobile: {
+  address: {
     type: String,
     required: true,
     indexe: true,
   },
 
-  shop_category_id: {
+  city: {
+    type: String,
+    indexe: true,
+  },
+
+  pincode: {
+    type: String,
+  },
+
+  mobile: {
+    type: String,
+    required: true,
+    indexe: true,
+  },
+
+  category_id: {
     type: String,
     required: true,
     index: true,
-  },
-
-  shop_photo: {
-    type: String,
   },
 
   is_shop_active: {
@@ -57,7 +53,7 @@ const shopRegistrationSchema = new mongoose.Schema({
     required: true,
   },
 
-  shop_rating: {
+  rating: {
     type: String,
   },
 
@@ -65,8 +61,8 @@ const shopRegistrationSchema = new mongoose.Schema({
     type: String,
   },
 
-  shop_image: {
-    type: String,
+  images: {
+    type: [],
   },
   shop_id: {
     type: String,
@@ -86,7 +82,7 @@ const shopRegistrationSchema = new mongoose.Schema({
     },
   ],
 
-  shopSearchString: {
+  search_string: {
     type: String,
     required: false,
     indexe: true,
@@ -124,7 +120,7 @@ const shopRegistrationSchema = new mongoose.Schema({
   },
 });
 
-shopRegistrationSchema.index({ shop_name: "text", shop_category_id: "text" }); // schema level
+shopRegistrationSchema.index({ name: "text", category_id: "text" }); // schema level
 
 const ShopModel = mongoose.model("shop", shopRegistrationSchema);
 

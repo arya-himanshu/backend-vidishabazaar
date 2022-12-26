@@ -1,11 +1,11 @@
 class GenericShopModel {
   constructor(shop, products) {
     this._id = shop._id;
-    this.shop_mobile = shop.shop_mobile;
-    this.shop_name = shop.shop_name;
-    this.shop_owner_user_id = shop.shop_owner_user_id;
-    this.shop_address = shop.shop_address;
-    this.shop_category_id = shop.shop_category_id;
+    this.mobile = shop.mobile;
+    this.name = shop.name;
+    this.owner_user_id = shop.owner_user_id;
+    this.address = shop.address;
+    this.category_id = shop.category_id;
     this.is_shop_active = shop.is_shop_active;
     this.is_shop_varified = shop.is_shop_varified;
     this.is_shop_Physically_available = shop.is_shop_Physically_available;
@@ -17,6 +17,7 @@ class GenericShopModel {
     this.opening_time = shop.opening_time;
     this.closing_time = shop.closing_time;
     this.days = shop.days;
+    this.images = shop.images;
   }
 }
 

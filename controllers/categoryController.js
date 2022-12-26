@@ -3,8 +3,8 @@ import GENERIC_RESPONSE_MESSAGES from "../enums/genericResponseEnums.js";
 import { BusinessCategory } from "../models/businessCategoryModel.js";
 
 const createCategory = (req, res, next) => {
-  const { category_name, language, url_path } = req.body;
-  if (!category_name) {
+  const { name, language, url_path } = req.body;
+  if (!name) {
     return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.CATEGORY_NAME_REQUIRED, undefined, false));
   }
 
@@ -18,11 +18,11 @@ const createCategory = (req, res, next) => {
     return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.ENGLISH_LANGUAGE_REQUIRED, undefined, false));
   }
   try {
-    isCategoryAlresdyCreated(category_name, async (error, response) => {
+    isCategoryAlresdyCreated(name, async (error, response) => {
       if (error) {
-        return next(ApiGenericResponse.successServerCode(response.message.replace("${category_name}", language.in_eg), undefined, false));
+        return next(ApiGenericResponse.successServerCode(response.message.replace("${name}", language.in_eg), undefined, false));
       } else {
-        const category = new BusinessCategory({ category_name, url_path, language, last_updated: new Date(), created_at: new Date() });
+        const category = new BusinessCategory({ name, url_path, language, last_updated: new Date(), created_at: new Date() });
         const registeredCategory = await category.save();
         if (registeredCategory) {
           return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.CATEGORY_CREATED, registeredCategory, true));
@@ -37,8 +37,8 @@ const createCategory = (req, res, next) => {
   }
 };
 
-const isCategoryAlresdyCreated = async (category_name, callback) => {
-  const category = await BusinessCategory.findOne({ category_name });
+const isCategoryAlresdyCreated = async (name, callback) => {
+  const category = await BusinessCategory.findOne({ name });
   if (category) {
     callback(true, { message: GENERIC_RESPONSE_MESSAGES.CATEGORY_ALREADY_CREATED });
   } else {

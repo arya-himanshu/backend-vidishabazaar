@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const businessCategorySchema = new mongoose.Schema({
-  category_name: {
+  name: {
     required: true,
     type: String,
   },
@@ -31,6 +31,6 @@ const businessCategorySchema = new mongoose.Schema({
   },
 });
 
-const BusinessCategory = mongoose.model("business-category", businessCategorySchema);
+const BusinessCategory = mongoose.model("business_category", businessCategorySchema);
 
 export { BusinessCategory };

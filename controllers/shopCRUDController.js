@@ -5,20 +5,23 @@ import { VidishaBazaarUser } from "../models/userModel.js";
 import { getProductsWithShopId } from "./addShopProductController.js";
 import GenericShopModel from "../services/GenericShopModel.js";
 import { getHeaders } from "../middleware/auth.js";
+import { generateOtp, sendOtp } from "../services/userService.js";
 
 const creatingShop = async (req, res, next) => {
-  const { shop_name, shop_gst_number, shop_owner_user_id, shop_address, shop_city, shop_pincode, shop_mobile, shop_category_id, shop_image, is_shop_Physically_available, shop_id, description, shop_tags, opening_time, closing_time, days, shopSearchString } = req.body;
-  if (!shop_name) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_NAME_REQUIRED, undefined, false));
-  if (!shop_owner_user_id) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_OWNER_ID_REQUIRED, undefined, false));
-  if (!shop_mobile) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_MOBILE_REQUIRED, undefined, false));
-  if (!shop_category_id) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_CATEGORY_ID_REQUIRED, undefined, false));
-  if (!shop_address) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_ADDRESS_REQUIRED, undefined, false));
   try {
-    const shop = await ShopModel({ shop_name, shop_gst_number: shop_gst_number, shop_owner_user_id, shop_address, shop_city, shop_pincode, shop_mobile, shop_category_id, shop_image, is_shop_Physically_available, last_updated: new Date(), created_at: new Date(), is_shop_varified: false, is_shop_active: false, is_shop_Physically_available: true, shop_id, description, shop_tags: shop_tags, opening_time, closing_time, days, shopSearchString, otp: Math.floor(100000 + Math.random() * 900000) });
+    const { name, gst_number, owner_user_id, address, city, pincode, mobile, category_id, images, is_shop_Physically_available, shop_id, description, shop_tags, opening_time, closing_time, days, search_string } = req.body;
+    if (!name) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_NAME_REQUIRED, undefined, false));
+    if (!owner_user_id) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_OWNER_ID_REQUIRED, undefined, false));
+    if (!mobile) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_MOBILE_REQUIRED, undefined, false));
+    if (!category_id) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_CATEGORY_ID_REQUIRED, undefined, false));
+    if (!address) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_ADDRESS_REQUIRED, undefined, false));
+    const otp = generateOtp();
+    const shop = await ShopModel({ name, gst_number: gst_number, owner_user_id, address, city, pincode, mobile, category_id, images, is_shop_Physically_available, last_updated: new Date(), created_at: new Date(), is_shop_varified: false, is_shop_active: false, is_shop_Physically_available: true, shop_id, description, shop_tags: shop_tags, opening_time, closing_time, days, search_string, otp: otp });
     if (shop) {
       const registeredShop = await shop.save();
       if (registeredShop) {
-        await VidishaBazaarUser.update({ _id: shop_owner_user_id }, { $set: { userRole: "ADMIN" } });
+        sendOtp(`Dear Customer, your otp is ${otp} .please do not share with anyone. Thanks RNIT`, mobile);
+        await VidishaBazaarUser.update({ _id: owner_user_id }, { $set: { userRole: "ADMIN" } });
         return res.status(201).send(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.SHOP_CREATED_SUCCESSFULY, registeredShop, true));
       } else {
         return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
@@ -41,17 +44,17 @@ const getAllShops = async (req, res, next) => {
     let shopsCount = await ShopModel.count();
     let shops;
     if (subCategoryId && searchString) {
-      shops = shops = await ShopModel.find({ shop_category_id: subCategoryId, $text: { $search: searchString } })
+      shops = shops = await ShopModel.find({ category_id: subCategoryId, $text: { $search: `^${searchString}` } })
         .sort({ _id: 1 })
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
         .limit(nPerPage);
-      shopsCount = await ShopModel.count({ shop_category_id: subCategoryId, $text: { $search: searchString } });
+      shopsCount = await ShopModel.count({ category_id: subCategoryId, $text: { $search: `^${searchString}` } });
     } else if (subCategoryId) {
-      shops = shops = await ShopModel.find({ shop_category_id: subCategoryId })
+      shops = shops = await ShopModel.find({ category_id: subCategoryId })
         .sort({ _id: 1 })
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
         .limit(nPerPage);
-      shopsCount = await ShopModel.count({ shop_category_id: subCategoryId });
+      shopsCount = await ShopModel.count({ category_id: subCategoryId });
     } else if (searchString) {
       shops = await ShopModel.find({ $text: { $search: `${searchString ? searchString : ""} ${subCategoryId ? subCategoryId : ""}` } })
         .sort({ _id: 1 })
@@ -76,7 +79,7 @@ const getAllShops = async (req, res, next) => {
 
 const getShopsWithName = async (req, res, next) => {
   try {
-    const shops = await ShopModel.find({ shop_name: { $regex: req.query.searchString, $options: "i" } });
+    const shops = await ShopModel.find({ name: { $regex: req.query.searchString, $options: "i" } });
     if (shops) {
       return next(ApiGenericResponse.successServerCode("Success", shops, true));
     }
@@ -108,7 +111,7 @@ const getShopWithId = async (req, res, next) => {
 const getShospWithUserId = async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const shops = await ShopModel.find({ shop_owner_user_id: userId });
+    const shops = await ShopModel.find({ owner_user_id: userId });
     if (shops && shops.length) {
       return next(ApiGenericResponse.successServerCode("Success", shops, true));
     } else {
@@ -120,7 +123,7 @@ const getShospWithUserId = async (req, res, next) => {
 };
 
 const getShopsIdsByUserId = async (userId) => {
-  return ShopModel.find({ shop_owner_user_id: userId }, { _id: 1 }).sort({ _id: 1 });
+  return ShopModel.find({ owner_user_id: userId }, { _id: 1 }).sort({ _id: 1 });
 };
 
 const getShopsWithShopIds = async (shopIds) => {
@@ -147,9 +150,17 @@ const deleteShopById = async (req, res, next) => {
 };
 
 const updateShop = async (req, res, next) => {
-  const { shop_name, shop_address, shop_mobile, shop_category_id, shop_image, description, shop_id, shop_tags, opening_time, closing_time, days, shopSearchString } = req.body;
   try {
-    const updatedShop = await ShopModel.findOneAndUpdate({ _id: req.body._id }, { $set: { shop_name, shop_address, shop_mobile, shop_category_id, shop_image, description, shop_id, shop_tags, last_updated: new Date(), opening_time, closing_time, days, shopSearchString } });
+    const { name, address, mobile, category_id, images, description, shop_id, shop_tags, opening_time, closing_time, days, search_string, is_user_verified } = req.body;
+    if (images && images >= 2) {
+      return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.TWO_IMAGE_ALLOWED, undefined, false));
+    }
+    let otp;
+    if (!is_user_verified) {
+      otp = generateOtp();
+      sendOtp(`Dear Customer, your otp is ${otp} .please do not share with anyone. Thanks RNIT`, mobile);
+    }
+    const updatedShop = await ShopModel.findOneAndUpdate({ _id: req.body._id }, { $set: { name, address, mobile, category_id, images, description, shop_id, shop_tags, last_updated: new Date(), opening_time, closing_time, days, search_string, otp } });
     if (updatedShop) {
       return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.SUCCESS, updatedShop, true));
     } else {
@@ -175,7 +186,7 @@ const getShopWithUserId = async (id) => {
 
 const validatingUserCanDeleteShop = async (userId, shopId) => {
   const shop = await getShopWithUserId(shopId);
-  if (shop && userId !== shop.shop_owner_user_id) {
+  if (shop && userId !== shop.owner_user_id) {
     return true;
   } else {
     return false;
@@ -189,7 +200,7 @@ const otpVarificationForShop = async (req, res, next) => {
     if (!otp) return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.OTP_REQUIRED, undefined, false));
     if (!shopId) return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.SHOP_ID_REQUIRED, undefined, false));
     const shop = await ShopModel.findOne({ _id: shopId });
-    if (shop && loginuserid && shop.shop_owner_user_id === loginuserid) {
+    if (shop && loginuserid && shop.owner_user_id === loginuserid) {
       if (shop.otp === otp) {
         await ShopModel.update({ _id: shopId }, { $set: { is_shop_varified: true } });
         return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.SHOP_SUCCESS_VARIFIED, undefined, true));
@@ -205,4 +216,25 @@ const otpVarificationForShop = async (req, res, next) => {
   }
 };
 
-export { creatingShop, getAllShops, getShopsWithName, getShopWithId, getShospWithUserId, deleteShopById, updateShop, getShopsIdsByUserId, getShopsWithShopIds, getRandomShops, getShopWithUserId, otpVarificationForShop };
+const resendShopOtp = async (request, response, next) => {
+  try {
+    const { _id, mobile } = request.body;
+    if (mobile) {
+      const otp = generateOtp();
+      const updatedShop = await ShopModel.findOneAndUpdate({ _id: _id }, { $set: { otp } });
+      if (updatedShop) {
+        sendOtp(`Dear Customer, your otp is ${otp} .please do not share with anyone. Thanks RNIT`, mobile);
+        return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.OTP_SEND_SUCCESSFULLY, request.body, true));
+      } else {
+        return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
+      }
+    } else {
+      return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.SHOP_NOT_FOUND, undefined, false));
+    }
+  } catch (er) {
+    console.error(er);
+    return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
+  }
+};
+
+export { creatingShop, getAllShops, getShopsWithName, getShopWithId, getShospWithUserId, deleteShopById, updateShop, getShopsIdsByUserId, getShopsWithShopIds, getRandomShops, getShopWithUserId, otpVarificationForShop, resendShopOtp };

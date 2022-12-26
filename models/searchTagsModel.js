@@ -25,6 +25,6 @@ const searchTags = new mongoose.Schema({
   },
 });
 
-const SearchTagsModel = mongoose.model("search-tag", searchTags);
+const SearchTagsModel = mongoose.model("search_tag", searchTags);
 
 export { SearchTagsModel };

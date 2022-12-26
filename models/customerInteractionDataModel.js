@@ -47,6 +47,6 @@ const customerInteractionDataSchema = new mongoose.Schema({
   },
 });
 
-const CustomerInteractionDataModel = mongoose.model("customer-interaction-data", customerInteractionDataSchema);
+const CustomerInteractionDataModel = mongoose.model("customer_interaction-data", customerInteractionDataSchema);
 
 export { CustomerInteractionDataModel };

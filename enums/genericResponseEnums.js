@@ -27,7 +27,7 @@ const GENERIC_RESPONSE_MESSAGES = {
   ENGLISH_LANGUAGE_REQUIRED: "English language is required, because it is default language",
   CATEGORY_CREATED: "Category was successfully created.",
   CATEGORY_CREATION_FAILED: "Failed to create shop category",
-  CATEGORY_ALREADY_CREATED: "Category name ${category_name} is already created",
+  CATEGORY_ALREADY_CREATED: "Category name ${name} is already created",
   CATEGORY_Id_REQUIRED: "Category ID is required",
   CATEGORY_NOT_FOUND: "Category not found",
   CATEGORY_UPDATED: "Category Update successfully",
@@ -77,6 +77,8 @@ const GENERIC_RESPONSE_MESSAGES = {
 
   //SUPER_ADMIN
   NO_PERMISSION: "You don't have right access,please connect with admin",
+  TWO_IMAGE_ALLOWED: "Only two images are allowed per shop",
+  OTP_SEND_SUCCESSFULLY: "OTP resend succesfully.",
 };
 
 export default GENERIC_RESPONSE_MESSAGES;
