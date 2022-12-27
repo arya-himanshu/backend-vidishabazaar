@@ -64,6 +64,7 @@ const shopRegistrationSchema = new mongoose.Schema({
   images: {
     type: [],
   },
+
   shop_id: {
     type: String,
     indexe: true,
@@ -87,6 +88,7 @@ const shopRegistrationSchema = new mongoose.Schema({
     required: false,
     indexe: true,
   },
+
   days: [
     {
       type: String,

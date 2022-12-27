@@ -9,14 +9,14 @@ import { generateOtp, sendOtp } from "../services/userService.js";
 
 const creatingShop = async (req, res, next) => {
   try {
-    const { name, gst_number, owner_user_id, address, city, pincode, mobile, category_id, images, is_shop_Physically_available, shop_id, description, shop_tags, opening_time, closing_time, days, search_string } = req.body;
+    const { name, owner_user_id, address, mobile, category_id, images, is_shop_Physically_available, shop_id, description, shop_tags, opening_time, closing_time, days, search_string } = req.body;
     if (!name) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_NAME_REQUIRED, undefined, false));
     if (!owner_user_id) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_OWNER_ID_REQUIRED, undefined, false));
     if (!mobile) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_MOBILE_REQUIRED, undefined, false));
     if (!category_id) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_CATEGORY_ID_REQUIRED, undefined, false));
     if (!address) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_ADDRESS_REQUIRED, undefined, false));
     const otp = generateOtp();
-    const shop = await ShopModel({ name, gst_number: gst_number, owner_user_id, address, city, pincode, mobile, category_id, images, is_shop_Physically_available, last_updated: new Date(), created_at: new Date(), is_shop_varified: false, is_shop_active: false, is_shop_Physically_available: true, shop_id, description, shop_tags: shop_tags, opening_time, closing_time, days, search_string, otp: otp });
+    const shop = await ShopModel({ name, owner_user_id, address, city: "vidisha", pincode: "464001", mobile, category_id, images, is_shop_Physically_available, last_updated: new Date(), created_at: new Date(), is_shop_varified: false, is_shop_active: false, is_shop_Physically_available: true, shop_id, description, shop_tags: shop_tags, opening_time, closing_time, days, search_string, otp: otp });
     if (shop) {
       const registeredShop = await shop.save();
       if (registeredShop) {
@@ -44,11 +44,11 @@ const getAllShops = async (req, res, next) => {
     let shopsCount = await ShopModel.count();
     let shops;
     if (subCategoryId && searchString) {
-      shops = shops = await ShopModel.find({ category_id: subCategoryId, $text: { $search: `^${searchString}` } })
+      shops = shops = await ShopModel.find({ category_id: subCategoryId, $or: [{ name: { $regex: `${searchString}`, $options: "i" } }, { address: { $regex: searchString, $options: "i" } }, { mobile: { $regex: searchString, $options: "i" } }, { search_string: { $regex: searchString, $options: "i" } }, { opening_time: { $regex: searchString, $options: "i" } }, { closing_time: { $regex: searchString, $options: "i" } }, { description: { $regex: searchString, $options: "i" } }] })
         .sort({ _id: 1 })
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
         .limit(nPerPage);
-      shopsCount = await ShopModel.count({ category_id: subCategoryId, $text: { $search: `^${searchString}` } });
+      shopsCount = await ShopModel.count({ category_id: subCategoryId, $or: [{ name: { $regex: searchString, $options: "i" } }, { address: { $regex: searchString, $options: "i" } }, { mobile: { $regex: searchString, $options: "i" } }, { search_string: { $regex: searchString, $options: "i" } }, { opening_time: { $regex: searchString, $options: "i" } }, { closing_time: { $regex: searchString, $options: "i" } }, { description: { $regex: searchString, $options: "i" } }] });
     } else if (subCategoryId) {
       shops = shops = await ShopModel.find({ category_id: subCategoryId })
         .sort({ _id: 1 })
@@ -56,11 +56,15 @@ const getAllShops = async (req, res, next) => {
         .limit(nPerPage);
       shopsCount = await ShopModel.count({ category_id: subCategoryId });
     } else if (searchString) {
-      shops = await ShopModel.find({ $text: { $search: `${searchString ? searchString : ""} ${subCategoryId ? subCategoryId : ""}` } })
+      shops = await ShopModel.find({
+        $or: [{ name: { $regex: searchString, $options: "i" } }, { address: { $regex: searchString, $options: "i" } }, { mobile: { $regex: searchString, $options: "i" } }, { search_string: { $regex: searchString, $options: "i" } }, { opening_time: { $regex: searchString, $options: "i" } }, { closing_time: { $regex: searchString, $options: "i" } }, { description: { $regex: searchString, $options: "i" } }],
+      })
         .sort({ _id: 1 })
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
         .limit(nPerPage);
-      shopsCount = await ShopModel.count({ $text: { $search: `${searchString ? searchString : ""} ${subCategoryId ? subCategoryId : ""}` } });
+      shopsCount = await ShopModel.count({
+        $or: [{ name: { $regex: searchString, $options: "i" } }, { address: { $regex: searchString, $options: "i" } }, { mobile: { $regex: searchString, $options: "i" } }, { search_string: { $regex: searchString, $options: "i" } }, { opening_time: { $regex: searchString, $options: "i" } }, { closing_time: { $regex: searchString, $options: "i" } }, { description: { $regex: searchString, $options: "i" } }],
+      });
     } else {
       shops = await ShopModel.find({})
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)

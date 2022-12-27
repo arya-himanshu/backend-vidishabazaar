@@ -4,9 +4,9 @@ import { CustomerInteractionDataModel } from "../models/customerInteractionDataM
 import { getShopsIdsByUserId } from "./shopCRUDController.js";
 
 const customerInteractionData = async (req, res, next) => {
-  const { session_id, user_id, unique_key, item_text, category_id, sub_category_id, shop_id, banner_id} = req.body;
+  const { session_id, user_id, unique_key, data_obj, category_id, sub_category_id, shop_id, banner_id} = req.body;
   try {
-    const generalMetrics = await CustomerInteractionDataModel({ session_id, item_text, user_id, unique_key, category_id, sub_category_id, shop_id, banner_id, last_updated: new Date(), created_at: new Date() });
+    const generalMetrics = await CustomerInteractionDataModel({ session_id, data_obj, user_id, unique_key, category_id, sub_category_id, shop_id, banner_id, last_updated: new Date(), created_at: new Date() });
     if (generalMetrics) {
       const createdMetrics = await generalMetrics.save();
       if (createdMetrics) {

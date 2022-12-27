@@ -5,8 +5,8 @@ const customerInteractionDataSchema = new mongoose.Schema({
     type: String,
   },
 
-  item_text: {
-    type: String,
+  data_obj: {
+    type: Object,
   },
 
   session_id: {
@@ -47,6 +47,6 @@ const customerInteractionDataSchema = new mongoose.Schema({
   },
 });
 
-const CustomerInteractionDataModel = mongoose.model("customer_interaction-data", customerInteractionDataSchema);
+const CustomerInteractionDataModel = mongoose.model("customer_interaction", customerInteractionDataSchema);
 
 export { CustomerInteractionDataModel };

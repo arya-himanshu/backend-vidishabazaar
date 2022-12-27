@@ -32,7 +32,7 @@ const getRecentActivitiesData = async (cookieId, uniqueKey = "SHOP", limit) => {
         return shops;
       }
     }
-    const randomShops = await getRandomShops(10);
+    const randomShops = await getRandomShops(6);
     return randomShops;
   } catch (err) {
     console.error(err);
