@@ -5,6 +5,7 @@ import { getRandomShops, getShopsWithShopIds } from "./shopCRUDController.js";
 
 const getRecentActivities = async (req, res, next) => {
   try {
+    console.log("request--->")
     const { cookieId } = req.params;
     const recentAct = await getRecentActivitiesData(cookieId, "SHOP", 3);
     if (recentAct) {
