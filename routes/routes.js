@@ -14,14 +14,6 @@ import mongoose from "mongoose";
 const { connection } = mongoose;
 
 router.get("/", (request, response) => {
-<<<<<<< HEAD
-  try{
-    connection.on("connected", () => {
-    });
-}catch(er){
-  console.error("app.js ",er)
-}
-=======
   try {
     connection.on("error", (error) => {
       console.error("Database error: " + mongodb.uri);
@@ -32,7 +24,6 @@ router.get("/", (request, response) => {
   } catch (er) {
     console.error("app.js ", er);
   }
->>>>>>> 9134127 (c)
   response.send("Hello");
 });
 
