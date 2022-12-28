@@ -9,8 +9,17 @@ import { shopRoutes } from "./shopRoutes.js";
 import { logInSignUpRoute } from "./userLogInSignUpRoutes.js";
 import userRoute from "./userRoutes.js";
 const router = express.Router();
+import mongoose from "mongoose";
+
+const { connection } = mongoose;
 
 router.get("/", (request, response) => {
+  try{
+    connection.on("connected", () => {
+    });
+}catch(er){
+  console.error("app.js ",er)
+}
   response.send("Hello");
 });
 
