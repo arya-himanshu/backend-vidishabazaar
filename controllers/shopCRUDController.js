@@ -43,12 +43,39 @@ const getAllShops = async (req, res, next) => {
     const nPerPage = req && req.query.nPerPage && req.query.nPerPage ? req.query.nPerPage : 10;
     let shopsCount = await ShopModel.count();
     let shops;
+    let multiStringsSearch = [];
+    const nameRegex = searchString
+      ? searchString.split(" ").map((s) => {
+        return { name: { $regex: s, $options: "i" } };
+      })
+      : [];
+    const addressRegex = searchString
+      ? searchString.split(" ").map((s) => {
+        return { address: { $regex: s, $options: "i" } };
+      })
+      : [];
+    const mobileRegex = searchString
+      ? searchString.split(" ").map((s) => {
+        return { mobile: { $regex: s, $options: "i" } };
+      })
+      : [];
+    const descriptionRegex = searchString
+      ? searchString.split(" ").map((s) => {
+        return { description: { $regex: s, $options: "i" } };
+      })
+      : [];
+    const search_stringRegex = searchString
+      ? searchString.split(" ").map((s) => {
+        return { search_string: { $regex: s, $options: "i" } };
+      })
+      : [];
+    multiStringsSearch = [...nameRegex, ...addressRegex, ...mobileRegex, ...descriptionRegex, ...search_stringRegex];
     if (subCategoryId && searchString) {
-      shops = shops = await ShopModel.find({ category_id: subCategoryId, $or: [{ name: { $regex: `${searchString}`, $options: "i" } }, { address: { $regex: searchString, $options: "i" } }, { mobile: { $regex: searchString, $options: "i" } }, { search_string: { $regex: searchString, $options: "i" } }, { opening_time: { $regex: searchString, $options: "i" } }, { closing_time: { $regex: searchString, $options: "i" } }, { description: { $regex: searchString, $options: "i" } }] })
+      shops = shops = await ShopModel.find({ category_id: subCategoryId, $or: [{ name: { $regex: `/${searchString}/i`, $options: "i" } }, { address: { $regex: searchString, $options: "i" } }, { mobile: { $regex: searchString, $options: "i" } }, { search_string: { $regex: searchString, $options: "i" } }, { opening_time: { $regex: searchString, $options: "i" } }, { closing_time: { $regex: searchString, $options: "i" } }, { description: { $regex: searchString, $options: "i" } }] })
         .sort({ _id: 1 })
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
         .limit(nPerPage);
-      shopsCount = await ShopModel.count({ category_id: subCategoryId, $or: [{ name: { $regex: searchString, $options: "i" } }, { address: { $regex: searchString, $options: "i" } }, { mobile: { $regex: searchString, $options: "i" } }, { search_string: { $regex: searchString, $options: "i" } }, { opening_time: { $regex: searchString, $options: "i" } }, { closing_time: { $regex: searchString, $options: "i" } }, { description: { $regex: searchString, $options: "i" } }] });
+      shopsCount = await ShopModel.count({ category_id: subCategoryId, $or: [{ name: { $regex: `/${searchString}/i`, $options: "i" } }, { address: { $regex: searchString, $options: "i" } }, { mobile: { $regex: searchString, $options: "i" } }, { search_string: { $regex: searchString, $options: "i" } }, { opening_time: { $regex: searchString, $options: "i" } }, { closing_time: { $regex: searchString, $options: "i" } }, { description: { $regex: searchString, $options: "i" } }] });
     } else if (subCategoryId) {
       shops = shops = await ShopModel.find({ category_id: subCategoryId })
         .sort({ _id: 1 })
@@ -57,13 +84,13 @@ const getAllShops = async (req, res, next) => {
       shopsCount = await ShopModel.count({ category_id: subCategoryId });
     } else if (searchString) {
       shops = await ShopModel.find({
-        $or: [{ name: { $regex: searchString, $options: "i" } }, { address: { $regex: searchString, $options: "i" } }, { mobile: { $regex: searchString, $options: "i" } }, { search_string: { $regex: searchString, $options: "i" } }, { opening_time: { $regex: searchString, $options: "i" } }, { closing_time: { $regex: searchString, $options: "i" } }, { description: { $regex: searchString, $options: "i" } }],
+        $or: multiStringsSearch,
       })
         .sort({ _id: 1 })
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
         .limit(nPerPage);
       shopsCount = await ShopModel.count({
-        $or: [{ name: { $regex: searchString, $options: "i" } }, { address: { $regex: searchString, $options: "i" } }, { mobile: { $regex: searchString, $options: "i" } }, { search_string: { $regex: searchString, $options: "i" } }, { opening_time: { $regex: searchString, $options: "i" } }, { closing_time: { $regex: searchString, $options: "i" } }, { description: { $regex: searchString, $options: "i" } }],
+        $or: multiStringsSearch,
       });
     } else {
       shops = await ShopModel.find({})
