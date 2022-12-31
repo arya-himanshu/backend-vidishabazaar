@@ -10,6 +10,6 @@ export const mongodb = {
     "/" +
     process.env.MONGO_DB_DATABASE +
     process.env.MONGO_DB_PARAMETERS,
-  username: process.env.MONGO_DB_USERNAME,
-  password: process.env.MONGO_DB_PASSWORD,
+    user: process.env.MONGO_DB_USERNAME,
+    pwd: process.env.MONGO_DB_PASSWORD,
 };
