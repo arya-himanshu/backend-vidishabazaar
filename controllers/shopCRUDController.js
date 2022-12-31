@@ -46,33 +46,33 @@ const getAllShops = async (req, res, next) => {
     let multiStringsSearch = [];
     const nameRegex = searchString
       ? searchString.split(" ").map((s) => {
-        return { name: { $regex: s, $options: "i" } };
-      })
+          return { name: { $regex: s, $options: "i" } };
+        })
       : [];
     const addressRegex = searchString
       ? searchString.split(" ").map((s) => {
-        return { address: { $regex: s, $options: "i" } };
-      })
+          return { address: { $regex: s, $options: "i" } };
+        })
       : [];
     const mobileRegex = searchString
       ? searchString.split(" ").map((s) => {
-        return { mobile: { $regex: s, $options: "i" } };
-      })
+          return { mobile: { $regex: s, $options: "i" } };
+        })
       : [];
     const descriptionRegex = searchString
       ? searchString.split(" ").map((s) => {
-        return { description: { $regex: s, $options: "i" } };
-      })
+          return { description: { $regex: s, $options: "i" } };
+        })
       : [];
     const search_stringRegex = searchString
       ? searchString.split(" ").map((s) => {
-        return { search_string: { $regex: s, $options: "i" } };
-      })
+          return { search_string: { $regex: s, $options: "i" } };
+        })
       : [];
     multiStringsSearch = [...nameRegex, ...addressRegex, ...mobileRegex, ...descriptionRegex, ...search_stringRegex];
     if (subCategoryId && searchString) {
       shops = shops = await ShopModel.find({ category_id: subCategoryId, $or: [{ name: { $regex: `/${searchString}/i`, $options: "i" } }, { address: { $regex: searchString, $options: "i" } }, { mobile: { $regex: searchString, $options: "i" } }, { search_string: { $regex: searchString, $options: "i" } }, { opening_time: { $regex: searchString, $options: "i" } }, { closing_time: { $regex: searchString, $options: "i" } }, { description: { $regex: searchString, $options: "i" } }] })
-        .sort({ _id: 1 })
+        .sort({ created_at: -1 })
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
         .limit(nPerPage);
       shopsCount = await ShopModel.count({ category_id: subCategoryId, $or: [{ name: { $regex: `/${searchString}/i`, $options: "i" } }, { address: { $regex: searchString, $options: "i" } }, { mobile: { $regex: searchString, $options: "i" } }, { search_string: { $regex: searchString, $options: "i" } }, { opening_time: { $regex: searchString, $options: "i" } }, { closing_time: { $regex: searchString, $options: "i" } }, { description: { $regex: searchString, $options: "i" } }] });
@@ -86,7 +86,7 @@ const getAllShops = async (req, res, next) => {
       shops = await ShopModel.find({
         $or: multiStringsSearch,
       })
-        .sort({ _id: 1 })
+        .sort({ created_at: -1 })
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
         .limit(nPerPage);
       shopsCount = await ShopModel.count({
@@ -94,6 +94,7 @@ const getAllShops = async (req, res, next) => {
       });
     } else {
       shops = await ShopModel.find({})
+        .sort({ created_at: -1 })
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
         .limit(nPerPage);
     }
