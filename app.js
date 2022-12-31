@@ -24,20 +24,40 @@ app.use(helmet());
 // compress all responses
 app.use(compression());
 
+try {
+  connect(mongodb.uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+} catch (er) {
+  console.log("========")
+  console.error(er);
+}
+
+
 // MongoDB connection
-connect(mongodb.uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
 
-// On connection error
-connection.on("error", (error) => {
-  console.error("Database error: " + mongodb.uri);
-});
+try {
+  // On connection error
+  connection.on("error", (error) => {
+    console.error("Database error: " + mongodb.uri);
+  });
+} catch (er) {
+  console.log("========")
 
-// On successful connection
-connection.on("connected", () => {
-});
+  console.error(er);
+}
+
+try {
+
+
+  // On successful connection
+  connection.on("connected", () => { });
+} catch (er) {
+  console.log("========")
+
+  console.error(er);
+}
 
 // Body parser middleware
 app.use(express.json());
@@ -54,6 +74,7 @@ app.get("*", function (req, res) {
 });
 
 const server = app.listen(process.env.PORT || 8080, () => {
+  console.log("------------------>", mongodb.uri)
   const port = server.address().port;
   console.log("app running on port", port);
 });
