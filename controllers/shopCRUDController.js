@@ -234,7 +234,7 @@ const otpVarificationForShop = async (req, res, next) => {
     const shop = await ShopModel.findOne({ _id: shopId });
     if (shop && loginuserid && shop.owner_user_id === loginuserid) {
       if (shop.otp === otp) {
-        await ShopModel.update({ _id: shopId }, { $set: { is_shop_varified: true } });
+        await ShopModel.update({ _id: shopId }, { $set: { is_shop_varified: true, otp: "" } });
         return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.SHOP_SUCCESS_VARIFIED, undefined, true));
       } else {
         return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.OTP_NOT_MATCHING, undefined, false));
@@ -258,6 +258,7 @@ const resendShopOtp = async (request, response, next) => {
         sendOtp(`Dear Customer, your otp is ${otp} .please do not share with anyone. Thanks RNIT`, mobile);
         return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.OTP_SEND_SUCCESSFULLY, request.body, true));
       } else {
+        console.log(_id);
         return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
       }
     } else {

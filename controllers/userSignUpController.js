@@ -79,7 +79,7 @@ const mobileOptValidation = (req, res, next) => {
         if (data && data.otp) {
           const dbOtp = data.otp;
           if (dbOtp === req.body.otp) {
-            const updatedUser = await VidishaBazaarUser.update({ _id: req.body.id }, { $set: { is_user_verified: true } });
+            const updatedUser = await VidishaBazaarUser.update({ _id: req.body.id }, { $set: { is_user_verified: true,otp:"" } });
             if (updatedUser) {
               const userData = new UserModel(data);
               return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.USER_VERIFIED, userData, true));

@@ -1,4 +1,5 @@
 import { VidishaBazaarUser } from "../models/userModel.js";
+import fetch from "node-fetch";
 
 const getUserByMobileNumber = async (mobile) => {
   try {
