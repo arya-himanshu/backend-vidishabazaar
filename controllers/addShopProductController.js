@@ -57,7 +57,7 @@ const updateProduct = async (req, res, next) => {
     if (isRightAccess) {
       return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.NO_PERMISSION, undefined, false));
     }
-    const updatedProduct = await ShoProductpModel.update({ _id: req.body._id }, { $set: { name, description, price, quantity, images, last_updated: new Date(), unit } });
+    const updatedProduct = await ShoProductpModel.findOneAndUpdate({ _id: req.body._id }, { $set: { name, description, price, quantity, images, last_updated: new Date(), unit } });
     if (updatedProduct) {
       return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.SUCCESS, updatedProduct, true));
     } else {

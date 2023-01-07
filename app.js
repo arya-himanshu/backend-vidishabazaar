@@ -30,7 +30,6 @@ try {
     useUnifiedTopology: true,
   });
 } catch (er) {
-  console.log("========")
   console.error(er);
 }
 
@@ -43,19 +42,13 @@ try {
     console.error("Database error: " + mongodb.uri);
   });
 } catch (er) {
-  console.log("========")
-
   console.error(er);
 }
 
 try {
-
-
   // On successful connection
   connection.on("connected", () => { });
 } catch (er) {
-  console.log("========")
-
   console.error(er);
 }
 
@@ -74,7 +67,6 @@ app.get("*", function (req, res) {
 });
 
 const server = app.listen(process.env.PORT || 8080, () => {
-  console.log("------------------>", mongodb.uri)
   const port = server.address().port;
   console.log("app running on port", port);
 });

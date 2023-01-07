@@ -4,6 +4,7 @@ import { getUserByMobileNumber, getUserById, generateOtp, sendOtp } from "../ser
 import GENERIC_RESPONSE_MESSAGES from "../enums/genericResponseEnums.js";
 import UserModel from "../services/UserModel.js";
 import http from 'http'
+import { iotpd } from "./otpHistoryController.js";
 
 const userSignUp = async (req, response, next) => {
   try {
@@ -39,7 +40,6 @@ const userSignUp = async (req, response, next) => {
             mobile,
             email,
             password,
-            confirm_password,
             otp,
             last_updated: new Date(),
             created_at: new Date(),
@@ -52,6 +52,7 @@ const userSignUp = async (req, response, next) => {
           const registeredUser = await user.save();
           if (registeredUser) {
             sendOtp(`Dear Customer, your otp is ${otp} .please do not share with anyone. Thanks RNIT`, registeredUser.mobile);
+            iotpd({ otp, user_id: registeredUser._id, shop_id: undefined, mobile: mobile })
             const userData = new UserModel(registeredUser);
             return next(ApiGenericResponse.successServerCode("User created successfully", userData, true));
           } else {
@@ -79,7 +80,7 @@ const mobileOptValidation = (req, res, next) => {
         if (data && data.otp) {
           const dbOtp = data.otp;
           if (dbOtp === req.body.otp) {
-            const updatedUser = await VidishaBazaarUser.update({ _id: req.body.id }, { $set: { is_user_verified: true,otp:"" } });
+            const updatedUser = await VidishaBazaarUser.update({ _id: req.body.id }, { $set: { is_user_verified: true, otp: "" } });
             if (updatedUser) {
               const userData = new UserModel(data);
               return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.USER_VERIFIED, userData, true));
