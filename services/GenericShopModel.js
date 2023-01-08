@@ -18,6 +18,7 @@ class GenericShopModel {
     this.closing_time = shop.closing_time;
     this.days = shop.days;
     this.images = shop.images;
+    this.map_lng_lat = shop.map_lng_lat;
   }
 }
 

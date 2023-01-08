@@ -4,7 +4,6 @@ const shopRegistrationSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    indexe: true,
   },
 
   gst_number: {
@@ -13,18 +12,20 @@ const shopRegistrationSchema = new mongoose.Schema({
 
   owner_user_id: {
     type: String,
-    required: true,
   },
 
   address: {
     type: String,
     required: true,
-    indexe: true,
+  },
+
+  map_lng_lat: {
+    type: Object,
+    required: false,
   },
 
   city: {
     type: String,
-    indexe: true,
   },
 
   pincode: {
@@ -34,13 +35,11 @@ const shopRegistrationSchema = new mongoose.Schema({
   mobile: {
     type: String,
     required: true,
-    indexe: true,
   },
 
   category_id: {
     type: String,
     required: true,
-    index: true,
   },
 
   is_shop_active: {
@@ -79,14 +78,12 @@ const shopRegistrationSchema = new mongoose.Schema({
     {
       type: Object,
       required: false,
-      indexe: true,
     },
   ],
 
   search_string: {
     type: String,
     required: false,
-    indexe: true,
   },
 
   days: [

@@ -10,14 +10,14 @@ import { iotpd } from "./otpHistoryController.js";
 
 const creatingShop = async (req, res, next) => {
   try {
-    const { name, owner_user_id, address, mobile, category_id, images, is_shop_Physically_available, shop_id, description, shop_tags, opening_time, closing_time, days, search_string } = req.body;
+    const { name, owner_user_id, address, mobile, category_id, images, is_shop_Physically_available, shop_id, description, shop_tags, opening_time, closing_time, days, search_string, map_lng_lat } = req.body;
     if (!name) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_NAME_REQUIRED, undefined, false));
     if (!owner_user_id) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_OWNER_ID_REQUIRED, undefined, false));
     if (!mobile) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_MOBILE_REQUIRED, undefined, false));
     if (!category_id) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_CATEGORY_ID_REQUIRED, undefined, false));
     if (!address) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_ADDRESS_REQUIRED, undefined, false));
     const otp = generateOtp();
-    const shop = await ShopModel({ name, owner_user_id, address, city: "vidisha", pincode: "464001", mobile, category_id, images, is_shop_Physically_available, last_updated: new Date(), created_at: new Date(), is_shop_varified: false, is_shop_active: false, is_shop_Physically_available: true, shop_id, description, shop_tags: shop_tags, opening_time, closing_time, days, search_string, otp: otp });
+    const shop = await ShopModel({ name, owner_user_id, address, city: "vidisha", pincode: "464001", mobile, category_id, images, is_shop_Physically_available, last_updated: new Date(), created_at: new Date(), is_shop_varified: false, is_shop_active: false, is_shop_Physically_available: true, shop_id, description, shop_tags: shop_tags, opening_time, closing_time, days, search_string, otp: otp, map_lng_lat });
     if (shop) {
       const registeredShop = await shop.save();
       if (registeredShop) {
@@ -48,28 +48,28 @@ const getAllShops = async (req, res, next) => {
     let multiStringsSearch = [];
     const nameRegex = searchString
       ? searchString.split(" ").map((s) => {
-        return { name: { $regex: s, $options: "i" } };
-      })
+          return { name: { $regex: s, $options: "i" } };
+        })
       : [];
     const addressRegex = searchString
       ? searchString.split(" ").map((s) => {
-        return { address: { $regex: s, $options: "i" } };
-      })
+          return { address: { $regex: s, $options: "i" } };
+        })
       : [];
     const mobileRegex = searchString
       ? searchString.split(" ").map((s) => {
-        return { mobile: { $regex: s, $options: "i" } };
-      })
+          return { mobile: { $regex: s, $options: "i" } };
+        })
       : [];
     const descriptionRegex = searchString
       ? searchString.split(" ").map((s) => {
-        return { description: { $regex: s, $options: "i" } };
-      })
+          return { description: { $regex: s, $options: "i" } };
+        })
       : [];
     const search_stringRegex = searchString
       ? searchString.split(" ").map((s) => {
-        return { search_string: { $regex: s, $options: "i" } };
-      })
+          return { search_string: { $regex: s, $options: "i" } };
+        })
       : [];
     multiStringsSearch = [...nameRegex, ...addressRegex, ...mobileRegex, ...descriptionRegex, ...search_stringRegex];
     if (subCategoryId && searchString) {
@@ -188,7 +188,7 @@ const deleteShopById = async (req, res, next) => {
 
 const updateShop = async (req, res, next) => {
   try {
-    const { name, address, mobile, category_id, images, description, shop_id, shop_tags, opening_time, closing_time, days, search_string, is_shop_varified } = req.body;
+    const { name, address, mobile, category_id, images, description, shop_id, shop_tags, opening_time, closing_time, days, search_string, map_lng_lat } = req.body;
     if (images && images >= 2) {
       return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.TWO_IMAGE_ALLOWED, undefined, false));
     }
@@ -201,7 +201,7 @@ const updateShop = async (req, res, next) => {
     }
     const updatedShop = await ShopModel.findOneAndUpdate(
       { _id: req.body._id },
-      { $set: { name, address, mobile, category_id, images, description, shop_id, shop_tags, last_updated: new Date(), opening_time, closing_time, days, search_string, otp } },
+      { $set: { name, address, mobile, category_id, images, description, shop_id, shop_tags, last_updated: new Date(), opening_time, closing_time, days, search_string, otp, map_lng_lat } },
       {
         fields: { otp: 0 },
         new: true,
