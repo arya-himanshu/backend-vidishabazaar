@@ -292,4 +292,32 @@ const resendShopOtp = async (request, response, next) => {
   }
 };
 
-export { creatingShop, getAllShops, getShopsWithName, getShopWithId, getShospWithUserId, deleteShopById, updateShop, getShopsIdsByUserId, getShopsWithShopIds, getRandomShops, getShopWithUserId, otpVarificationForShop, resendShopOtp };
+const addProductNameToShopSearchString = async (productObj) => {
+  try {
+    const shop = await getShopById(productObj.shop_id);
+    return await ShopModel.updateOne({ _id: productObj.shop_id }, { $set: { search_string: `${shop.search_string} ${productObj.name}` } });
+  } catch (er) {
+    console.error(er);
+    return er;
+  }
+};
+
+const getShopById = async (shopId) => {
+  try {
+    return await ShopModel.findOne({ _id: shopId }, { otp: 0 });
+  } catch (er) {
+    console.error(er);
+  }
+};
+
+const updateShopImpressionCount = async (shopObj) => {
+  try {
+    const shop = await getShopById(shopObj.shopId);
+    return await ShopModel.updateOne({ _id: shopObj.shopId }, { $set: { impression_count: shop.impression_count ? shop.impression_count+ shopObj.count : 1} });
+  } catch (er) {
+    console.error(er);
+    return er;
+  }
+};
+
+export { creatingShop, getAllShops, getShopsWithName, getShopWithId, getShospWithUserId, deleteShopById, updateShop, getShopsIdsByUserId, getShopsWithShopIds, getRandomShops, getShopWithUserId, otpVarificationForShop, resendShopOtp, addProductNameToShopSearchString,updateShopImpressionCount };

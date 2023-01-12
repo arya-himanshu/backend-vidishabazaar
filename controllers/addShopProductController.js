@@ -2,7 +2,7 @@ import ApiGenericResponse from "../middleware/ApiGenericResponse.js";
 import GENERIC_RESPONSE_MESSAGES from "../enums/genericResponseEnums.js";
 import ShoProductpModel from "../models/shopProduct.js";
 import { getHeaders } from "../middleware/auth.js";
-import { getShopWithUserId } from "./shopCRUDController.js";
+import { addProductNameToShopSearchString, getShopWithUserId } from "./shopCRUDController.js";
 
 const addShopProductController = async (req, res, next) => {
   const { name, description, price, images, quantity, shop_id, unit } = req.body;
@@ -20,6 +20,7 @@ const addShopProductController = async (req, res, next) => {
     if (product) {
       const registeredProduct = await product.save();
       if (registeredProduct) {
+        await addProductNameToShopSearchString({ shop_id: registeredProduct.shop_id, name: registeredProduct.name });
         return res.status(201).send(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.SHOP_CREATED_SUCCESSFULY, registeredProduct, true));
       } else {
         return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
