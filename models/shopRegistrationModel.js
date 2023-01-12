@@ -109,7 +109,7 @@ const shopRegistrationSchema = new mongoose.Schema({
   },
   impression_count: {
     type: Number,
-    required: true,
+    required: false,
   },
   last_updated: {
     type: Date,
