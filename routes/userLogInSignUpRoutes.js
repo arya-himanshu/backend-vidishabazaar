@@ -14,9 +14,13 @@ logInSignUpRoute.route("/mobile-varification").post(userSignUp.mobileOptValidati
 
 logInSignUpRoute.route("/signin-resend-otp").post(userSignIp.resendSignInOtp);
 
-logInSignUpRoute.route("/signup-resend-otp").post(userSignIp.resendSignInOtp);
-
 logInSignUpRoute.route("/update-user-token").get(userSignIp.deleteUserTokenOnLogOut);
+
+logInSignUpRoute.route("/change-password").post(auth,userSignIp.userChangePassword);
+
+logInSignUpRoute.route("/change-password-otp").get(auth,userSignIp.changePasswordOTP);
+
+logInSignUpRoute.route("/forgot-password").post(userSignIp.forgotPassword);
 
 logInSignUpRoute.route("/sotph").post(auth,iotpd);
 

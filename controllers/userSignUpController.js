@@ -3,29 +3,28 @@ import ApiGenericResponse from "../middleware/ApiGenericResponse.js";
 import { getUserByMobileNumber, getUserById, generateOtp, sendOtp } from "../services/userService.js";
 import GENERIC_RESPONSE_MESSAGES from "../enums/genericResponseEnums.js";
 import UserModel from "../services/UserModel.js";
-import http from 'http'
 import { iotpd } from "./otpHistoryController.js";
 
 const userSignUp = async (req, response, next) => {
   try {
     const { name, dob, mobile, email, password, confirm_password } = req.body;
     if (!name) {
-      return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.FIRST_NAME_REQUIRED, undefined, false));
+      return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.FIRST_NAME_REQUIRED, undefined, false));
     }
     if (!dob) {
-      return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.DOB, undefined, false));
+      return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.DOB, undefined, false));
     }
     if (!mobile) {
-      return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.MOBILE_IS_REQUIRED, undefined, false));
+      return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.MOBILE_IS_REQUIRED, undefined, false));
     } else if (mobile && mobile.length != 10) {
-      return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.MOBILE_IN_10_DIGIT), undefined, false);
+      return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.MOBILE_IN_10_DIGIT), undefined, false);
     }
     if (password && confirm_password && password !== confirm_password) {
-      return next(ApiGenericResponse.unauthorizedServerError(GENERIC_RESPONSE_MESSAGES.PASS_CONFIRMPASS_NOT_MATCHING, undefined, false));
+      return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.PASS_CONFIRMPASS_NOT_MATCHING, undefined, false));
     } else if (!password) {
-      return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.PASSWORD_IS_REQUIRED, undefined, false));
+      return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.PASSWORD_IS_REQUIRED, undefined, false));
     } else if (!confirm_password) {
-      return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.CONFIRM_PASS_IS_REQUIRED, undefined, false));
+      return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.CONFIRM_PASS_IS_REQUIRED, undefined, false));
     }
     // Checking if user exist or not
     getUserByMobileNumber(mobile)

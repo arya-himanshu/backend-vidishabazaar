@@ -79,6 +79,11 @@ const GENERIC_RESPONSE_MESSAGES = {
   NO_PERMISSION: "You don't have right access,please connect with admin",
   TWO_IMAGE_ALLOWED: "Only two images are allowed per shop",
   OTP_SEND_SUCCESSFULLY: "OTP resend succesfully.",
+  OLD_PASS_RQUIRED : "Old password required.",
+  CONFIRM_PASS_RQUIRED : "Confirm Password is required.",
+  PASS_UPDATE_SUCCESSFULLY : "Password update successfully",
+  OLD_PASSWORD_NOT_MATCHING : "Old password is not matching"
+
 };
 
 export default GENERIC_RESPONSE_MESSAGES;
