@@ -3,18 +3,18 @@ import ApiGenericResponse from "../middleware/ApiGenericResponse.js";
 import GENERIC_RESPONSE_MESSAGES from "../enums/genericResponseEnums.js";
 
 const shopCategory = (req, res, next) => {
-  const { name, language } = req.body;
-  if (!name) {
-    return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.CATEGORY_NAME_REQUIRED));
-  }
-
-  if (!language) {
-    return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.LANGUAGE_REQUIRED));
-  } else if (language && !language.in_eg) {
-    return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.ENGLISH_LANGUAGE_REQUIRED));
-  }
-
   try {
+    const { name, language } = req.body;
+    if (!name) {
+      return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.CATEGORY_NAME_REQUIRED));
+    }
+
+    if (!language) {
+      return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.LANGUAGE_REQUIRED));
+    } else if (language && !language.in_eg) {
+      return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.ENGLISH_LANGUAGE_REQUIRED));
+    }
+
     isCategoryAlresdyCreated(name, async (error, response) => {
       if (error) {
         return next(ApiGenericResponse.badRequest(response.message.replace("${name}", language.in_eg)));
@@ -35,8 +35,8 @@ const shopCategory = (req, res, next) => {
 };
 
 const getAllShopCategory = async (req, res, next) => {
-  const categories = await ShopCategory.find({});
   try {
+    const categories = await ShopCategory.find({});
     if (categories && categories.length) {
       return next(ApiGenericResponse.successServerCode("Success", categories, true));
     } else {
@@ -48,11 +48,11 @@ const getAllShopCategory = async (req, res, next) => {
 };
 
 const getCategoryById = async (req, res, next) => {
-  const { id } = req.params;
-  if (!id) {
-    return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.CATEGORY_Id_REQUIRED));
-  }
   try {
+    const { id } = req.params;
+    if (!id) {
+      return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.CATEGORY_Id_REQUIRED));
+    }
     const categories = await ShopCategory.findOne({ _id: id });
     if (categories) {
       return next(ApiGenericResponse.successServerCode({ data: categories }));
@@ -75,11 +75,11 @@ const isCategoryAlresdyCreated = async (name, callback) => {
 };
 
 const updateCategorybyId = async (req, res, next) => {
-  const { _id, name, language } = req.body;
-  if (!_id) {
-    return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.CATEGORY_Id_REQUIRED));
-  }
   try {
+    const { _id, name, language } = req.body;
+    if (!_id) {
+      return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.CATEGORY_Id_REQUIRED));
+    }
     const updatedCatgory = await ShopCategory.updateOne({ _id: _id }, { $set: { name: name, language } });
     if (!updatedCatgory) {
       return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SOMETHING_WENT_WRONG));
@@ -93,8 +93,8 @@ const updateCategorybyId = async (req, res, next) => {
 };
 
 const deleteCategoryById = async (req, res, next) => {
-  const { id } = req.params;
   try {
+    const { id } = req.params;
     const deletedCategory = await ShopCategory.deleteOne({ _id: id });
     if (!deletedCategory) {
       return next(ApiGenericResponse.internalServerError(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR));

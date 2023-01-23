@@ -192,7 +192,7 @@ const updateShop = async (req, res, next) => {
     if (images && images >= 2) {
       return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.TWO_IMAGE_ALLOWED, undefined, false));
     }
-    let otp;
+    let otp ="";
     const existingShop = await ShopModel.findOne({ _id: req.body._id });
     if (existingShop && !existingShop.is_shop_varified) {
       otp = generateOtp();
@@ -208,7 +208,7 @@ const updateShop = async (req, res, next) => {
       }
     );
     if (updatedShop) {
-      iotpd({ otp, user_id: updatedShop.owner_user_id, shop_id: updatedShop._id, mobile: mobile });
+      otp ? iotpd({ otp, user_id: updatedShop.owner_user_id, shop_id: updatedShop._id, mobile: mobile }):"";
       return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.SUCCESS, updatedShop, true));
     } else {
       return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
