@@ -13,23 +13,27 @@ const auth = async (req, res, next) => {
             return el.token === token;
           });
           const verifyUser = jwt.verify(token, process.env.SECRET_KEY);
-          if (isUserAuthentic && verifyUser) {
-            next();
+          if (isUserAuthentic) {
+            if (verifyUser) {
+              next();
+            } else {
+              return next(ApiGenericResponse.unauthorizedServerError("Logging out because the user is not authorized.", undefined, false));
+            }
           } else {
-            return next(ApiGenericResponse.badRequest({ errorMsg: "Data not matching with given details 1" }));
+            return next(ApiGenericResponse.unauthorizedServerError("The user is not authorized.", undefined, false));
           }
         } else {
-          return next(ApiGenericResponse.unauthorizedServerError({ errorMsg: "You don't have access to write,please connect with admin" }));
+          return next(ApiGenericResponse.unauthorizedServerError("You don't have access to write; please connect with admin.", undefined, false));
         }
       } else {
-        return next(ApiGenericResponse.badRequest({ errorMsg: "Data not matching with given details 2" }));
+        return next(ApiGenericResponse.unauthorizedServerError("Data does not match the given details.", undefined, false));
       }
     } else {
-      return next(ApiGenericResponse.badRequest({ errorMsg: "Mobile number and token is required 3" }));
+      return next(ApiGenericResponse.unauthorizedServerError("A mobile number and token are required.", undefined, false));
     }
   } catch (error) {
     console.error(error);
-    return next(ApiGenericResponse.unauthorizedServerError("UnAuthorize user or internal server error", undefined, false));
+    return next(ApiGenericResponse.unauthorizedServerError("Unauthorized user or internal server error", undefined, false));
   }
 };
 

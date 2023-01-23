@@ -11,9 +11,6 @@ const userSignUp = async (req, response, next) => {
     if (!name) {
       return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.FIRST_NAME_REQUIRED, undefined, false));
     }
-    if (!dob) {
-      return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.DOB, undefined, false));
-    }
     if (!mobile) {
       return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.MOBILE_IS_REQUIRED, undefined, false));
     } else if (mobile && mobile.length != 10) {

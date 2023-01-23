@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
   },
   dob: {
     type: Date,
-    required: true,
+    required: false,
   },
   mobile: {
     type: String,
@@ -35,7 +35,6 @@ const userSchema = new mongoose.Schema({
   },
   otp: {
     type: String,
-    default: 8987,
   },
   tokens: [
     {
