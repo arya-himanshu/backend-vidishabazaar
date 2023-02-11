@@ -192,14 +192,14 @@ const getAllShops = async (req, res, next) => {
         .sort({ created_at: -1 })
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
         .limit(nPerPage);
+      shopsCount = await ShopModel.count({
+        $and: [
+          {
+            $or: c
+          }
+        ]
+      });
     }
-    shopsCount = await ShopModel.count({
-      $and: [
-        {
-          $or: c
-        }
-      ]
-    });
     if (shops && shops.length) {
       return next(ApiGenericResponse.successServerCode("Success", { shops, itemsCount: shopsCount }, true));
     } else {
