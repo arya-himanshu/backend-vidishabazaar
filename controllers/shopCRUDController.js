@@ -10,14 +10,17 @@ import { iotpd } from "./otpHistoryController.js";
 
 const creatingShop = async (req, res, next) => {
   try {
-    const { name, owner_user_id, address, mobile, category_id, images, is_shop_Physically_available, shop_id, description, shop_tags, opening_time, closing_time, days, search_string, map_lng_lat } = req.body;
+    const { name, owner_user_id, address, mobile, category_id, images, is_shop_Physically_available, shop_id, description, shop_tags, opening_time, closing_time, days, search_string, map_lng_lat, city, state, pincode } = req.body;
     if (!name) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_NAME_REQUIRED, undefined, false));
     if (!owner_user_id) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_OWNER_ID_REQUIRED, undefined, false));
     if (!mobile) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_MOBILE_REQUIRED, undefined, false));
     if (!category_id) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_CATEGORY_ID_REQUIRED, undefined, false));
     if (!address) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.SHOP_ADDRESS_REQUIRED, undefined, false));
+    if (!city) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.CITY, undefined, false));
+    if (!state) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.STATE, undefined, false));
+    if (!pincode) return next(ApiGenericResponse.badRequest(GENERIC_RESPONSE_MESSAGES.PINCODE, undefined, false));
     const otp = generateOtp();
-    const shop = await ShopModel({ name, owner_user_id, address, city: "vidisha", pincode: "464001", mobile, category_id, images, is_shop_Physically_available, last_updated: new Date(), created_at: new Date(), is_shop_varified: false, is_shop_active: false, is_shop_Physically_available: true, shop_id, description, shop_tags: shop_tags, opening_time, closing_time, days, search_string, otp: otp, map_lng_lat });
+    const shop = await ShopModel({ name, owner_user_id, address, city, pincode, state, mobile, category_id, images, is_shop_Physically_available, last_updated: new Date(), created_at: new Date(), is_shop_varified: false, is_shop_active: false, is_shop_Physically_available: true, shop_id, description, shop_tags: shop_tags, opening_time, closing_time, days, search_string, otp: otp, map_lng_lat });
     if (shop) {
       const registeredShop = await shop.save();
       if (registeredShop) {
@@ -43,54 +46,100 @@ const getAllShops = async (req, res, next) => {
     const subCategoryId = req.query.subCategoryId;
     const pageNumber = req.query.pageNumber;
     const nPerPage = req && req.query.nPerPage && req.query.nPerPage ? req.query.nPerPage : 10;
+    const city = req?.query?.city ? req?.query?.city?.toLowerCase() : "";
+    const locality = req?.query?.locality ? req?.query?.locality?.toLowerCase() : "";
+    const pincode = req?.query?.pincode ? req?.query?.pincode?.toLowerCase().toString() : "";
     let shopsCount = await ShopModel.count();
     let shops;
     let multiStringsSearch = [];
     const nameRegex = searchString
       ? searchString.split(" ").map((s) => {
-          return { name: { $regex: s, $options: "i" } };
-        })
+        return { name: { $regex: s, $options: "i" } };
+      })
       : [];
     const addressRegex = searchString
       ? searchString.split(" ").map((s) => {
-          return { address: { $regex: s, $options: "i" } };
-        })
+        return { address: { $regex: s, $options: "i" } };
+      })
       : [];
     const mobileRegex = searchString
       ? searchString.split(" ").map((s) => {
-          return { mobile: { $regex: s, $options: "i" } };
-        })
+        return { mobile: { $regex: s, $options: "i" } };
+      })
       : [];
     const descriptionRegex = searchString
       ? searchString.split(" ").map((s) => {
-          return { description: { $regex: s, $options: "i" } };
-        })
+        return { description: { $regex: s, $options: "i" } };
+      })
       : [];
     const search_stringRegex = searchString
       ? searchString.split(" ").map((s) => {
-          return { search_string: { $regex: s, $options: "i" } };
-        })
+        return { search_string: { $regex: s, $options: "i" } };
+      })
+      : [];
+    const cityStrings = city
+      ? city.split(" ").map((s) => {
+        return { city: s };
+      })
+      : [];
+    const localityStrings = locality
+      ? locality.split(" ").map((s) => {
+        return { city: s };
+      })
       : [];
     multiStringsSearch = [...nameRegex, ...addressRegex, ...mobileRegex, ...descriptionRegex, ...search_stringRegex];
+    const c = [...cityStrings, ...localityStrings, { pincode: pincode }]
     if (subCategoryId && searchString) {
-      shops = await ShopModel.find({ category_id: subCategoryId, $or: [{ name: { $regex: `/${searchString}/i`, $options: "i" } }, { address: { $regex: searchString, $options: "i" } }, { mobile: { $regex: searchString, $options: "i" } }, { search_string: { $regex: searchString, $options: "i" } }, { opening_time: { $regex: searchString, $options: "i" } }, { closing_time: { $regex: searchString, $options: "i" } }, { description: { $regex: searchString, $options: "i" } }] }, { otp: 0 })
+      shops = await ShopModel.find({
+        $and: [
+          {
+            $or: [
+              {
+                category_id: subCategoryId
+              },
+            ]
+          },
+          {
+            $or: [{ name: { $regex: `/${searchString}/i`, $options: "i" } }, { search_string: { $regex: searchString, $options: "i" } }, { description: { $regex: searchString, $options: "i" } }, ...c]
+          }
+        ]
+      }, { otp: 0 })
         .sort({ created_at: -1 })
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
         .limit(nPerPage);
       shopsCount = await ShopModel.count({ category_id: subCategoryId, $or: [{ name: { $regex: `/${searchString}/i`, $options: "i" } }, { address: { $regex: searchString, $options: "i" } }, { mobile: { $regex: searchString, $options: "i" } }, { search_string: { $regex: searchString, $options: "i" } }, { opening_time: { $regex: searchString, $options: "i" } }, { closing_time: { $regex: searchString, $options: "i" } }, { description: { $regex: searchString, $options: "i" } }] });
     } else if (subCategoryId) {
-      shops = await ShopModel.find({ category_id: subCategoryId }, { otp: 0 })
+      shops = await ShopModel.find({
+        $and: [
+          {
+            $or: [
+              {
+                category_id: subCategoryId
+              },
+            ]
+          },
+          {
+            $or: c
+          }
+        ]
+      }, { otp: 0 })
         .sort({ _id: 1 })
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
         .limit(nPerPage);
       shopsCount = await ShopModel.count({ category_id: subCategoryId });
     } else if (searchString) {
-      shops = await ShopModel.find(
-        {
-          $or: multiStringsSearch,
-        },
-        { otp: 0 }
-      )
+      shops = await ShopModel.find({
+        $and: [
+          {
+            $or:
+              multiStringsSearch
+
+          },
+          {
+            $or: c
+          }
+        ]
+      }, { otp: 0 })
         .sort({ created_at: -1 })
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
         .limit(nPerPage);
@@ -98,7 +147,13 @@ const getAllShops = async (req, res, next) => {
         $or: multiStringsSearch,
       });
     } else {
-      shops = await ShopModel.find({}, { otp: 0 })
+      shops = await ShopModel.find({
+        $and: [
+          {
+            $or: c
+          }
+        ]
+      }, { otp: 0 })
         .sort({ created_at: -1 })
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
         .limit(nPerPage);
@@ -188,11 +243,11 @@ const deleteShopById = async (req, res, next) => {
 
 const updateShop = async (req, res, next) => {
   try {
-    const { name, address, mobile, category_id, images, description, shop_id, shop_tags, opening_time, closing_time, days, search_string, map_lng_lat } = req.body;
+    const { name, address, mobile, category_id, images, description, shop_id, shop_tags, opening_time, closing_time, days, search_string, map_lng_lat, city, state, pincode } = req.body;
     if (images && images >= 2) {
       return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.TWO_IMAGE_ALLOWED, undefined, false));
     }
-    let otp ="";
+    let otp = "";
     const existingShop = await ShopModel.findOne({ _id: req.body._id });
     if (existingShop && !existingShop.is_shop_varified) {
       otp = generateOtp();
@@ -201,14 +256,14 @@ const updateShop = async (req, res, next) => {
     }
     const updatedShop = await ShopModel.findOneAndUpdate(
       { _id: req.body._id },
-      { $set: { name, address, mobile, category_id, images, description, shop_id, shop_tags, last_updated: new Date(), opening_time, closing_time, days, search_string, otp, map_lng_lat } },
+      { $set: { name, address, mobile, category_id, images, description, shop_id, shop_tags, last_updated: new Date(), opening_time, closing_time, days, search_string, otp, map_lng_lat, city, state, pincode } },
       {
         fields: { otp: 0 },
         new: true,
       }
     );
     if (updatedShop) {
-      otp ? iotpd({ otp, user_id: updatedShop.owner_user_id, shop_id: updatedShop._id, mobile: mobile }):"";
+      otp ? iotpd({ otp, user_id: updatedShop.owner_user_id, shop_id: updatedShop._id, mobile: mobile }) : "";
       return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.SUCCESS, updatedShop, true));
     } else {
       return next(ApiGenericResponse.successServerCode(GENERIC_RESPONSE_MESSAGES.INTERNAM_SERVER_ERROR, undefined, false));
@@ -313,11 +368,11 @@ const getShopById = async (shopId) => {
 const updateShopImpressionCount = async (shopObj) => {
   try {
     const shop = await getShopById(shopObj.shopId);
-    return await ShopModel.updateOne({ _id: shopObj.shopId }, { $set: { impression_count: shop.impression_count ? shop.impression_count+ shopObj.count : 1} });
+    return await ShopModel.updateOne({ _id: shopObj.shopId }, { $set: { impression_count: shop.impression_count ? shop.impression_count + shopObj.count : 1 } });
   } catch (er) {
     console.error(er);
     return er;
   }
 };
 
-export { creatingShop, getAllShops, getShopsWithName, getShopWithId, getShospWithUserId, deleteShopById, updateShop, getShopsIdsByUserId, getShopsWithShopIds, getRandomShops, getShopWithUserId, otpVarificationForShop, resendShopOtp, addProductNameToShopSearchString,updateShopImpressionCount };
+export { creatingShop, getAllShops, getShopsWithName, getShopWithId, getShospWithUserId, deleteShopById, updateShop, getShopsIdsByUserId, getShopsWithShopIds, getRandomShops, getShopWithUserId, otpVarificationForShop, resendShopOtp, addProductNameToShopSearchString, updateShopImpressionCount };
