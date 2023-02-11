@@ -107,7 +107,20 @@ const getAllShops = async (req, res, next) => {
         .sort({ created_at: -1 })
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
         .limit(nPerPage);
-      shopsCount = await ShopModel.count({ category_id: subCategoryId, $or: [{ name: { $regex: `/${searchString}/i`, $options: "i" } }, { address: { $regex: searchString, $options: "i" } }, { mobile: { $regex: searchString, $options: "i" } }, { search_string: { $regex: searchString, $options: "i" } }, { opening_time: { $regex: searchString, $options: "i" } }, { closing_time: { $regex: searchString, $options: "i" } }, { description: { $regex: searchString, $options: "i" } }] });
+      shopsCount = await ShopModel.count({
+        $and: [
+          {
+            $or: [
+              {
+                category_id: subCategoryId
+              },
+            ]
+          },
+          {
+            $or: [{ name: { $regex: `/${searchString}/i`, $options: "i" } }, { search_string: { $regex: searchString, $options: "i" } }, { description: { $regex: searchString, $options: "i" } }, ...c]
+          }
+        ]
+      });
     } else if (subCategoryId) {
       shops = await ShopModel.find({
         $and: [
@@ -126,7 +139,20 @@ const getAllShops = async (req, res, next) => {
         .sort({ _id: 1 })
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
         .limit(nPerPage);
-      shopsCount = await ShopModel.count({ category_id: subCategoryId });
+      shopsCount = await ShopModel.count({
+        $and: [
+          {
+            $or: [
+              {
+                category_id: subCategoryId
+              },
+            ]
+          },
+          {
+            $or: c
+          }
+        ]
+      });
     } else if (searchString) {
       shops = await ShopModel.find({
         $and: [
@@ -144,7 +170,16 @@ const getAllShops = async (req, res, next) => {
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
         .limit(nPerPage);
       shopsCount = await ShopModel.count({
-        $or: multiStringsSearch,
+        $and: [
+          {
+            $or:
+              multiStringsSearch
+
+          },
+          {
+            $or: c
+          }
+        ]
       });
     } else {
       shops = await ShopModel.find({
@@ -158,6 +193,13 @@ const getAllShops = async (req, res, next) => {
         .skip(pageNumber > 0 ? (pageNumber - 1) * nPerPage : 0)
         .limit(nPerPage);
     }
+    shopsCount = await ShopModel.count({
+      $and: [
+        {
+          $or: c
+        }
+      ]
+    });
     if (shops && shops.length) {
       return next(ApiGenericResponse.successServerCode("Success", { shops, itemsCount: shopsCount }, true));
     } else {
