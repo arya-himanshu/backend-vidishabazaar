@@ -85,7 +85,16 @@ const GENERIC_RESPONSE_MESSAGES = {
   OLD_PASS_RQUIRED : "Old password required.",
   CONFIRM_PASS_RQUIRED : "Confirm Password is required.",
   PASS_UPDATE_SUCCESSFULLY : "Password update successfully",
-  OLD_PASSWORD_NOT_MATCHING : "Old password is not matching"
+  OLD_PASSWORD_NOT_MATCHING : "Old password is not matching",
+
+
+  // DAILY WAGE
+
+  NAME:"Name is required",
+  ADDRESS:"Address is required",
+  ACCOUNT_OWNER_REQUIRED:"Account owner required",
+  LABOUR_NOT_ADDED:"Labour not registed",
+
 
 };
 

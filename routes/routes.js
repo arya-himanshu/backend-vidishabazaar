@@ -10,6 +10,7 @@ import { logInSignUpRoute } from "./userLogInSignUpRoutes.js";
 import userRoute from "./userRoutes.js";
 const router = express.Router();
 import mongoose from "mongoose";
+import { dailyWageLabourRoutes } from "./dailyWageLabourRoute.js";
 
 const { connection } = mongoose;
 
@@ -34,5 +35,7 @@ router.use("/c-i-d", customerInteractionDataRoutes);
 router.use("/recent-activity", recentActivityRoutes);
 
 router.use("/bazar-ads", bazarAdsRoutes);
+
+router.use("/daily-wage-labour", dailyWageLabourRoutes);
 
 export default router;

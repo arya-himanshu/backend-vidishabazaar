@@ -22,15 +22,15 @@ const generateOtp = () => {
 
 const sendOtp = async (text, mobile) => {
   try {
-    fetch(`http://mysms.msg24.in/api/mt/SendSMS?user=${process.env.SMS_USER_NAME}&password=${process.env.SMS_PASSWORD}&senderid=${process.env.SMS_SENDERID}&channel=TRANS&DCS=0&flashsms=0&number=${mobile}&text=${text}&route=08&Peid=${process.env.SMS_PEID}&DLTTemplateId=${process.env.SMS_TEMPLATEID}`)
-      .then((res) => {
-        console.error(res);
-        Promise.resolve(res);
-      })
-      .catch((er) => {
-        console.error(er);
-        Promise.reject(er);
-      });
+    // fetch(`http://mysms.msg24.in/api/mt/SendSMS?user=${process.env.SMS_USER_NAME}&password=${process.env.SMS_PASSWORD}&senderid=${process.env.SMS_SENDERID}&channel=TRANS&DCS=0&flashsms=0&number=${mobile}&text=${text}&route=08&Peid=${process.env.SMS_PEID}&DLTTemplateId=${process.env.SMS_TEMPLATEID}`)
+    //   .then((res) => {
+    //     console.error(res);
+    //     Promise.resolve(res);
+    //   })
+    //   .catch((er) => {
+    //     console.error(er);
+    //     Promise.reject(er);
+    //   });
   } catch (er) {
     console.error(er);
     Promise.reject(er);
